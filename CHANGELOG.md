@@ -1,3 +1,7 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* 日志模板创建
+
+## 0.0.1+2
+
+* 扩展工具模板创建

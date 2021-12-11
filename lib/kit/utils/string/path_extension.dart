@@ -1,6 +1,6 @@
 import 'package:eyflutter_core/kit/utils/set/list_extention.dart';
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart' as p;
 
 extension PathUtilsExtension on String {
   /// 获取地址扩展名
@@ -8,7 +8,7 @@ extension PathUtilsExtension on String {
     if (this.isEmptyString) {
       return "";
     }
-    var extension = path.extension(this) ?? "";
+    var extension = p.extension(this) ?? "";
     var index = extension.indexOf("?");
     if (index >= 0) {
       extension = extension.substring(0, index);
@@ -21,7 +21,7 @@ extension PathUtilsExtension on String {
     if (this.isEmptyString) {
       return "";
     }
-    var basename = path.basename(this);
+    var basename = p.basename(this);
     return basename ?? "";
   }
 
