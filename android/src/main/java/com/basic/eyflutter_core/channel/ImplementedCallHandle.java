@@ -1,4 +1,4 @@
-package com.cloud.basic.mq.cloud_basic_mq.channel;
+package com.basic.eyflutter_core.channel;
 
 /**
  * Author lijinghuan

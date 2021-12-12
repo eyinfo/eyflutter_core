@@ -1,4 +1,4 @@
-package com.cloud.basic.mq.cloud_basic_mq.enums;
+package com.basic.eyflutter_core.enums;
 
 /**
  * Author lijinghuan

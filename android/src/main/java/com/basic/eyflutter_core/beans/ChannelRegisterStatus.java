@@ -1,4 +1,4 @@
-package com.cloud.basic.mq.cloud_basic_mq.beans;
+package com.basic.eyflutter_core.beans;
 
 /**
  * Author lijinghuan

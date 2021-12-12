@@ -1,4 +1,4 @@
-import 'package:cloud_basic_kit/cloud_basic_kit.dart';
+import 'package:eyflutter_core/kit/timer/system.dart';
 
 class CycleUtils {
   /// 执行过程中时间间隔超过特定时间后才做回调

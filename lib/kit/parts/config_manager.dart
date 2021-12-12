@@ -15,27 +15,6 @@ class ConfigManager {
 
   Map<String, dynamic> _configMap = {};
 
-  /// scheme listener key
-  String schemeListenerKey = "a7e4d67828da1192";
-
-  /// image list listener key
-  String imageListListenerKey = "6994d97a73c937d6";
-
-  /// 图片配置key
-  String imageConfigKey = "0604d4dba92a5709";
-
-  /// lang type config key
-  String langTypeConfigKey = "2d94b1ab596a34e7";
-
-  /// cos config key
-  String cosConfigKey = "01540f8bf060494a";
-
-  /// xml cache config key
-  String xmlCacheConfigKey = "4424264858bc2343";
-
-  /// state lifecycle listener
-  String stateLifecycleKey = "d654e2591793e0c7";
-
   /// 添加配置项
   /// [key] 必须唯一,定义在各模块中
   /// [value] 配置对象

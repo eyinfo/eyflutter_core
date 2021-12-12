@@ -1,9 +1,9 @@
-package com.cloud.basic.mq.cloud_basic_mq.channel;
+package com.basic.eyflutter_core.channel;
 
-import com.cloud.libsdk.events.Action0;
-import com.cloud.libsdk.events.RunnableParamsN;
-import com.cloud.libsdk.handler.HandlerManager;
-import com.cloud.libsdk.utils.ObjectJudge;
+import com.cloud.eyutils.HandlerManager;
+import com.cloud.eyutils.events.Action0;
+import com.cloud.eyutils.events.RunnableParamsN;
+import com.cloud.eyutils.utils.ObjectJudge;
 
 /**
  * Author lijinghuan

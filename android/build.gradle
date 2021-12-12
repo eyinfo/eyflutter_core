@@ -3,19 +3,17 @@ version '1.0'
 
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+        maven { url "http://mvn.geease.com/repository/cloud-group/" }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
 
 rootProject.allprojects {
     repositories {
-        google()
-        mavenCentral()
+        maven { url "http://mvn.geease.com/repository/cloud-group/" }
     }
 }
 
@@ -30,6 +28,10 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
     }
+}
+
+dependencies {
+    api 'com.cloud:eyutils:0.0.3'
 }

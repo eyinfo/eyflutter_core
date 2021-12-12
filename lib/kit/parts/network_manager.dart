@@ -1,4 +1,4 @@
-import 'package:cloud_basic_mq/cloud_basic_mq.dart';
+import 'package:eyflutter_core/mq/cloud_channel_manager.dart';
 
 class NetworkManager {
   factory NetworkManager() => _getInstance();
@@ -9,9 +9,7 @@ class NetworkManager {
   NetworkManager._internal();
 
   static NetworkManager _getInstance() {
-    if (_instance == null) {
-      _instance = new NetworkManager._internal();
-    }
+    _instance ??= NetworkManager._internal();
     return _instance;
   }
 

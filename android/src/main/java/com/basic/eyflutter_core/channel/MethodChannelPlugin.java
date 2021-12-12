@@ -1,8 +1,8 @@
-package com.cloud.basic.mq.cloud_basic_mq.channel;
+package com.basic.eyflutter_core.channel;
 
 import android.text.TextUtils;
 
-import com.cloud.basic.mq.cloud_basic_mq.enums.ChannelMode;
+import com.basic.eyflutter_core.enums.ChannelMode;
 
 import java.util.HashMap;
 import java.util.Map;

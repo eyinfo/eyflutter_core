@@ -14,7 +14,6 @@ dependencies:
   uuid: ^3.0.5
   path: ^1.8.0
   crypto: ^3.0.1
-  path_provider: ^2.0.3
   uni_links: ^0.5.1
   xml_parser: ^1.0.0
   intl: ^0.17.0

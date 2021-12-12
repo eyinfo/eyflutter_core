@@ -1,15 +1,14 @@
-package com.cloud.basic.mq.cloud_basic_mq.channel;
+package com.basic.eyflutter_core.channel;
 
 import android.text.TextUtils;
 
-import com.cloud.basic.mq.cloud_basic_mq.beans.ChannelMessage;
-import com.cloud.basic.mq.cloud_basic_mq.beans.ChannelRegisterStatus;
-import com.cloud.basic.mq.cloud_basic_mq.enums.ChannelMode;
-import com.cloud.libsdk.events.RunnableParamsN;
-import com.cloud.libsdk.handler.HandlerManager;
-import com.cloud.libsdk.logs.Logger;
-import com.cloud.libsdk.utils.ObjectJudge;
-import com.cloud.storage.MemoryCache;
+import com.basic.eyflutter_core.beans.ChannelMessage;
+import com.basic.eyflutter_core.beans.ChannelRegisterStatus;
+import com.basic.eyflutter_core.enums.ChannelMode;
+import com.cloud.eyutils.HandlerManager;
+import com.cloud.eyutils.events.RunnableParamsN;
+import com.cloud.eyutils.storage.MemoryCache;
+import com.cloud.eyutils.utils.ObjectJudge;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -269,7 +268,7 @@ public class ChannelPlugin {
                 result.error(entry.message.getErrorCode(), entry.message.getErrorMessage(), entry.message.getErrorDetails());
             }
         } catch (Exception e) {
-            Logger.error(e);
+            e.printStackTrace();
         }
         if (handle != null) {
             handle.onSendComplete(this);

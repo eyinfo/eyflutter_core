@@ -1,38 +1,23 @@
 package com.basic.eyflutter_core;
 
-import androidx.annotation.NonNull;
+import com.basic.eyflutter_core.channel.ChannelPlugin;
+import com.basic.eyflutter_core.enums.ChannelMode;
+import com.cloud.eyutils.launchs.LauncherState;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 
-/** EyflutterCorePlugin */
-public class EyflutterCorePlugin implements FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private MethodChannel channel;
+public class EyflutterCorePlugin implements FlutterPlugin {
 
-  @Override
-  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "eyflutter_core");
-    channel.setMethodCallHandler(this);
-  }
-
-  @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    } else {
-      result.notImplemented();
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        if (LauncherState.getApplicationContext() == null) {
+            LauncherState.setApplicationContext(binding.getApplicationContext());
+        }
+        ChannelPlugin.getInstance().register(binding.getBinaryMessenger(), ChannelMode.method);
     }
-  }
 
-  @Override
-  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
-  }
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        ChannelPlugin.getInstance().destroy();
+    }
 }

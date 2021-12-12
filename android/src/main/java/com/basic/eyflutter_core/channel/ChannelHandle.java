@@ -1,6 +1,6 @@
-package com.cloud.basic.mq.cloud_basic_mq.channel;
+package com.basic.eyflutter_core.channel;
 
-import com.cloud.libsdk.ebus.EBus;
+import com.cloud.eyutils.ebus.EBus;
 
 /**
  * Author lijinghuan

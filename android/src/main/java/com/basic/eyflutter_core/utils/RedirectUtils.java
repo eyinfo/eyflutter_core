@@ -1,4 +1,4 @@
-package com.cloud.basic.mq.cloud_basic_mq.utils;
+package com.basic.eyflutter_core.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +9,6 @@ import android.provider.Settings;
 import android.text.TextUtils;
 
 import androidx.fragment.app.FragmentActivity;
-
-import com.cloud.libsdk.logs.Logger;
 
 /**
  * @Author lijinghuan
@@ -126,7 +124,7 @@ public class RedirectUtils extends BaseRedirectUtils {
             }
             context.startActivity(intent);
         } catch (Exception e) {
-            Logger.error(e);
+            e.printStackTrace();
         }
     }
 

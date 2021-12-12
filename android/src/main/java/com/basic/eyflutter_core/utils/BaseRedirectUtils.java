@@ -1,4 +1,4 @@
-package com.cloud.basic.mq.cloud_basic_mq.utils;
+package com.basic.eyflutter_core.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,12 +7,12 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.cloud.libsdk.beans.MapEntry;
-import com.cloud.libsdk.beans.MapEntryItem;
-import com.cloud.libsdk.ebus.EBus;
-import com.cloud.libsdk.utils.BundleUtils;
-import com.cloud.libsdk.utils.ObjectJudge;
-import com.cloud.libsdk.utils.OperationUtils;
+import com.cloud.eyutils.beans.MapEntry;
+import com.cloud.eyutils.beans.MapEntryItem;
+import com.cloud.eyutils.ebus.EBus;
+import com.cloud.eyutils.utils.BundleUtils;
+import com.cloud.eyutils.utils.ObjectJudge;
+import com.cloud.eyutils.utils.OperationUtils;
 
 /**
  * Author lijinghuan
