@@ -1,6 +1,6 @@
 name: eyflutter_core
 description: EyFlutter基础库
-version: 0.0.1+7
+version: 0.0.1+8
 homepage: https://github.com/eyinfo/eyflutter_core
 
 environment:
@@ -21,6 +21,7 @@ dependencies:
   build: ^2.0.3
   analyzer: ^1.7.2
   build_runner: ^1.12.2
+  provider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

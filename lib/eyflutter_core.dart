@@ -7,6 +7,15 @@
 
 library eyflutter_core;
 
+// models
+export 'provider/models/provider_list_model.dart';
+export 'provider/models/provider_model.dart';
+// events
+export 'log/events/i_log_filter.dart';
+export 'log/events/i_log_output.dart';
+export 'log/events/i_logger.dart';
+export 'log/events/i_log_listener.dart';
+export 'log/events/i_log_printer.dart';
 // sprintf
 export 'kit/sprintf/float_formatter.dart';
 export 'kit/sprintf/sprintf_impl.dart';
@@ -62,12 +71,6 @@ export 'log/beans/log_event.dart';
 export 'log/beans/crash_info.dart';
 export 'log/beans/log_response.dart';
 export 'log/beans/log_out_event.dart';
-// events
-export 'log/events/i_log_filter.dart';
-export 'log/events/i_log_output.dart';
-export 'log/events/i_logger.dart';
-export 'log/events/i_log_listener.dart';
-export 'log/events/i_log_printer.dart';
 // gen
 export 'gen/builder.dart';
 export 'gen/db_schema_generator.dart';
@@ -81,6 +84,12 @@ export 'storage/shared_preferences_utils.dart';
 export 'storage/memory_utils.dart';
 export 'storage/application_tool_utils.dart';
 export 'storage/mmkv_utils.dart';
+// event
+export 'lang/event/on_lang_config.dart';
+// lang
+export 'lang/lang_localizations_delegate.dart';
+export 'lang/lang_manager.dart';
+export 'lang/lang_storage.dart';
 // printers
 export 'log/printers/pretty_printer.dart';
 export 'log/printers/console_output.dart';
