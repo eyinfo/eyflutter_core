@@ -25,8 +25,8 @@ import com.cloud.eyutils.utils.OperationUtils;
 class BaseRedirectUtils {
 
     //这里的params非空,在调用方法前需做判断;
-    private static void putBundleValues(Bundle bundle, MapEntryItem... params) {
-        for (MapEntry<String, ?> param : params) {
+    private static void putBundleValues(Bundle bundle, MapEntryItem<Object>... params) {
+        for (MapEntry<String, Object> param : params) {
             BundleUtils.setBundleValue(bundle, param.getKey(), param.getValue());
         }
     }
@@ -96,7 +96,7 @@ class BaseRedirectUtils {
      * @param cls     要启动类对象
      * @param params  传入的bundle数据参数
      */
-    public static void startActivity(Context context, Class<?> cls, MapEntryItem<?>... params) {
+    public static void startActivity(Context context, Class<?> cls, MapEntryItem<Object>... params) {
         Intent _intent = new Intent();
         _intent.setClass(context, cls);
         if (!ObjectJudge.isNullOrEmpty(params)) {
@@ -121,7 +121,7 @@ class BaseRedirectUtils {
      * @param cls     要启动类对象
      * @param params  传入的bundle数据参数
      */
-    public static void startActivityNewTask(Context context, Class<?> cls, MapEntryItem... params) {
+    public static void startActivityNewTask(Context context, Class<?> cls, MapEntryItem<Object>... params) {
         Intent _intent = new Intent();
         _intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         _intent.setClass(context, cls);

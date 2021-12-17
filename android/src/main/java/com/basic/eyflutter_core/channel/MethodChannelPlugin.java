@@ -53,6 +53,7 @@ public class MethodChannelPlugin {
             this.channelName = channelName;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
             String method = methodCall.method;

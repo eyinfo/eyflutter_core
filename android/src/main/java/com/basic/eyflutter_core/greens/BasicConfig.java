@@ -1,9 +1,11 @@
 package com.basic.eyflutter_core.greens;
 
+import android.content.Context;
 import android.os.Environment;
 
 import com.cloud.eyutils.beans.BasicConfigItem;
 import com.cloud.eyutils.events.OnEntryCall;
+import com.cloud.eyutils.launchs.LauncherState;
 import com.cloud.eyutils.utils.PathsUtils;
 
 import java.io.File;
@@ -29,8 +31,9 @@ public class BasicConfig implements OnEntryCall {
         BasicConfigItem configItem = new BasicConfigItem();
         configItem.setDebug(false);
         configItem.setProjectPackgeName(packageName);
-        String path = PathsUtils.combine(Environment.getExternalStorageDirectory().getPath(), String.format("Android/data/%s/cache/", packageName));
-        configItem.setCacheRootDir(new File(path));
+        Context applicationContext = LauncherState.getApplicationContext();
+        File dir = applicationContext.getExternalFilesDir("");
+        configItem.setCacheRootDir(dir);
         return configItem;
     }
 }

@@ -42,23 +42,26 @@ public class MMKVService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void put(String withId, String key, String type, Object value) {
         if (ObjectJudge.isEmptyString(key) || value == null) {
             return;
         }
         try {
-            String cvalue = ConvertUtils.toString(value);
             MMKV mmkv = getMMKVInstance(withId);
-            if ((value instanceof Integer) || (value instanceof Long) || TextUtils.equals(type, "int")) {
-                mmkv.encode(key, ConvertUtils.toLong(cvalue));
-            } else if ((value instanceof Double) || TextUtils.equals(type, "double")) {
-                mmkv.encode(key, ConvertUtils.toDouble(cvalue));
-            } else if ((value instanceof String) || TextUtils.equals(type, "string")) {
-                mmkv.encode(key, cvalue);
-            } else if ((value instanceof Boolean) || TextUtils.equals(type, "bool")) {
-                mmkv.encode(key, ObjectJudge.isTrue(cvalue));
-            } else if ((value instanceof Set) || TextUtils.equals(type, "set")) {
+            if ((value instanceof Set) || TextUtils.equals(type, "set")) {
                 mmkv.encode(key, (Set<String>) value);
+            } else {
+                String cvalue = ConvertUtils.toString(value);
+                if ((value instanceof Integer) || (value instanceof Long) || TextUtils.equals(type, "int")) {
+                    mmkv.encode(key, ConvertUtils.toLong(cvalue));
+                } else if ((value instanceof Double) || TextUtils.equals(type, "double")) {
+                    mmkv.encode(key, ConvertUtils.toDouble(cvalue));
+                } else if ((value instanceof String) || TextUtils.equals(type, "string")) {
+                    mmkv.encode(key, cvalue);
+                } else if ((value instanceof Boolean) || TextUtils.equals(type, "bool")) {
+                    mmkv.encode(key, ObjectJudge.isTrue(cvalue));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

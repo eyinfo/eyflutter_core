@@ -63,7 +63,7 @@ public abstract class CacheAbstractMethods {
         chainTasks.build(daoSession, extras);
     }
 
-    private <T> void addDataChain(final DBOpenHelper helper, final OnDataChainRunnable runnable, T extras) {
+    private <T> void addDataChain(final DBOpenHelper helper, final OnDataChainRunnable<Object, AbstractDaoSession, Object> runnable, T extras) {
         perform(new OnChainRunnable<Void, AbstractDaoSession>() {
             @Override
             public Void run(AbstractDaoSession daoSession, Object extras) {

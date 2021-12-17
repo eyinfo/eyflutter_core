@@ -153,6 +153,7 @@ public class ReceiveDbService {
         return properties;
     }
 
+    @SuppressWarnings("unchecked")
     private List<HashMap<String, Object>> getDataMap(HashMap<String, Object> arguments) {
         List<HashMap<String, Object>> dataMap = new LinkedList<>();
         Object data = arguments.get("data");

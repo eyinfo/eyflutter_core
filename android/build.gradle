@@ -58,3 +58,11 @@ dependencies {
     //https://github.com/Tencent/MMKV/blob/master/README_CN.md
     api 'com.tencent:mmkv-static:1.2.7'
 }
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}

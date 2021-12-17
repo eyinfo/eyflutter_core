@@ -143,6 +143,7 @@ public class ChannelPlugin {
         this.registerMode(messenger, mode);
     }
 
+    @SuppressWarnings("deprecation")
     private BinaryMessenger getMessenger(PluginRegistry registry, String canonicalName, ChannelMode mode) {
         String key = String.format("%s_%s", canonicalName, mode.getChannelName());
         if (registry.hasPlugin(key)) {
