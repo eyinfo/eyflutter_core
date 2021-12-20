@@ -129,7 +129,7 @@ class CloudRouteObserver extends NavigatorObserver {
   }
 
   void _callRouteChange(Route route, bool isDispose) {
-    routeEvent.onRouteChanged(route, isDispose);
+    routeEvent?.onRouteChanged(route, isDispose);
   }
 
   bool _goIntercept(Route route) {
@@ -155,7 +155,7 @@ class CloudRouteObserver extends NavigatorObserver {
       title = "${arguments.remove("title")}";
     }
     var routeName = route?.settings?.name;
-    return routeEvent.onGoIntercept(routeName, url: url, title: title, arguments: arguments) ?? false;
+    return routeEvent?.onGoIntercept(routeName, url: url, title: title, arguments: arguments) ?? false;
   }
 
   @override

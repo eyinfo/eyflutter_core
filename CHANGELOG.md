@@ -1,5 +1,13 @@
-## 0.0.2
+## 0.0.2+3
+* 1.修复未绑定事件路由分发空指针问题;
 
+## 0.0.2+2
+* 移除builder及数据库存储方式
+
+## 0.0.2+1
+* 解决dart:mirrors导入错误
+
+## 0.0.2
 * 1.修复getExternalStorageDirectory()已过时bug;
 * 2.修复OnDataChainRunnable的成员的run(T)的调用未经过检查bug;
 * 3.修复其它警告bug;
