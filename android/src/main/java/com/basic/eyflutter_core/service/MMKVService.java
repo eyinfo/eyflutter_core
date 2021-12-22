@@ -116,4 +116,22 @@ public class MMKVService {
         MMKV mmkv = getMMKVInstance(withId);
         mmkv.removeValueForKey(key);
     }
+
+    public void removeContains(String withId, String fuzzyKey) {
+        if (ObjectJudge.isEmptyString(fuzzyKey)) {
+            return;
+        }
+        MMKV mmkv = getMMKVInstance(withId);
+        String[] keys = mmkv.allKeys();
+        if (ObjectJudge.isNullOrEmpty(keys)) {
+            return;
+        }
+        Set<String> removeKeys = new HashSet<String>();
+        for (String key : keys) {
+            if (key.startsWith(fuzzyKey)) {
+                removeKeys.add(key);
+            }
+        }
+        mmkv.removeValuesForKeys(ConvertUtils.toArray(removeKeys));
+    }
 }

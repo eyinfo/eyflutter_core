@@ -57,6 +57,7 @@ dependencies {
     api 'org.greenrobot:greendao:3.3.0'
     //https://github.com/Tencent/MMKV/blob/master/README_CN.md
     api 'com.tencent:mmkv-static:1.2.7'
+    api 'com.squareup.okhttp3:okhttp:3.12.3'
 }
 
 allprojects {

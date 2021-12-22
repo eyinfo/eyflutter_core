@@ -25,6 +25,7 @@ import com.cloud.eyutils.utils.OperationUtils;
 class BaseRedirectUtils {
 
     //这里的params非空,在调用方法前需做判断;
+    @SuppressWarnings("unchecked")
     private static void putBundleValues(Bundle bundle, MapEntryItem<Object>... params) {
         for (MapEntry<String, Object> param : params) {
             BundleUtils.setBundleValue(bundle, param.getKey(), param.getValue());
@@ -39,6 +40,7 @@ class BaseRedirectUtils {
      * @param action  启动服务action,接收时传回
      * @param params  服务启动时传入的数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startService(Context context, Class<?> cls, String action, MapEntryItem... params) {
         Intent _intent = new Intent();
         if (!TextUtils.isEmpty(action)) {
@@ -96,6 +98,7 @@ class BaseRedirectUtils {
      * @param cls     要启动类对象
      * @param params  传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivity(Context context, Class<?> cls, MapEntryItem<Object>... params) {
         Intent _intent = new Intent();
         _intent.setClass(context, cls);
@@ -121,6 +124,7 @@ class BaseRedirectUtils {
      * @param cls     要启动类对象
      * @param params  传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivityNewTask(Context context, Class<?> cls, MapEntryItem<Object>... params) {
         Intent _intent = new Intent();
         _intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -148,6 +152,7 @@ class BaseRedirectUtils {
      * @param requestCode 回调onActivityResult时传回的requestCode,0<requestCode<2^16(65536)
      * @param params      传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivityForResult(Activity activity, Class<?> cls, int requestCode, MapEntryItem... params) {
         Intent _intent = new Intent();
         _intent.setClass(activity, cls);
@@ -179,6 +184,7 @@ class BaseRedirectUtils {
      * @param requestCode 回调onActivityResult时传回的requestCode,0<requestCode<2^16(65536)
      * @param params      传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivityForResultNewTask(Activity activity, Class<?> cls, int requestCode, MapEntryItem... params) {
         Intent _intent = new Intent();
         _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -212,6 +218,7 @@ class BaseRedirectUtils {
      * @param requestCode   回调onActivityResult中接收的requestCode参数,0<requestCode<2^16(65536)
      * @param params        传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivityForResult(Activity activity, String packageName, String classFullName, int requestCode, MapEntryItem... params) {
         if (activity == null || TextUtils.isEmpty(packageName) || TextUtils.isEmpty(classFullName)) {
             return;
@@ -259,6 +266,7 @@ class BaseRedirectUtils {
      * @param requestCode   回调onActivityResult中接收的requestCode参数,0<requestCode<2^16(65536)
      * @param params        传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivityForResultNewTask(Activity activity, String packageName, String classFullName, int requestCode, MapEntryItem... params) {
         if (activity == null || TextUtils.isEmpty(packageName) || TextUtils.isEmpty(classFullName)) {
             return;
@@ -306,6 +314,7 @@ class BaseRedirectUtils {
      * @param classFullName activity全路径类名
      * @param params        传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivity(Context context, String packageName, String classFullName, MapEntryItem... params) {
         if (context == null || TextUtils.isEmpty(classFullName)) {
             return;
@@ -360,6 +369,7 @@ class BaseRedirectUtils {
      * @param classFullName activity全路径类名
      * @param params        传入的bundle数据参数
      */
+    @SuppressWarnings("unchecked")
     public static void startActivityNewTask(Context context, String packageName, String classFullName, MapEntryItem... params) {
         if (context == null || TextUtils.isEmpty(classFullName)) {
             return;
@@ -414,6 +424,7 @@ class BaseRedirectUtils {
      * @param requestCode start activity result for request code
      * @param params      start activity result callback params
      */
+    @SuppressWarnings("unchecked")
     public static void finishActivity(Activity activity, int requestCode, MapEntryItem... params) {
         if (requestCode == -62731) {
             activity.finish();

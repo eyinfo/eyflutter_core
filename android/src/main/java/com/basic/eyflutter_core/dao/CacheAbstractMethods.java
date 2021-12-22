@@ -81,6 +81,7 @@ public abstract class CacheAbstractMethods {
         }, extras, helper);
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> void addDataChain(final OnDataChainRunnable runnable, String tagKey, String dynamicTagKey, T extras) {
         try {
             String dbkey = TextUtils.isEmpty(dynamicTagKey) ? tagKey : dynamicTagKey;

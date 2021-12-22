@@ -56,4 +56,8 @@ public class MmkvUtils {
     public void remove(String withId, String key) {
         mmkvService.remove(withId, key);
     }
+
+    public void removeContains(String withId, String fuzzyKey) {
+        mmkvService.removeContains(withId, fuzzyKey);
+    }
 }
