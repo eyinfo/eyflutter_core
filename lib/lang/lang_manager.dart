@@ -1,27 +1,21 @@
+import 'package:eyflutter_core/eyflutter_core.dart';
 import 'package:eyflutter_core/kit/parts/config_manager.dart';
 import 'package:eyflutter_core/kit/utils/json_utils.dart';
 import 'package:eyflutter_core/kit/utils/map/map_extension.dart';
 import 'package:eyflutter_core/kit/utils/set/list_extention.dart';
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
+import 'package:eyflutter_core/lang/beans/lang_config_entry.dart';
+import 'package:eyflutter_core/lang/beans/lang_entry.dart';
+import 'package:eyflutter_core/lang/event/on_lang_change_state.dart';
 import 'package:eyflutter_core/lang/event/on_lang_config.dart';
-import 'package:eyflutter_core/mq/ebus/cloud_ebus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-
-class LangEntry {
-  String code;
-  Map<String, dynamic> map;
-
-  LangEntry({this.code, this.map});
-}
 
 class LangManager {
   factory LangManager() => _getInstance();
 
   static LangManager get instance => _getInstance();
   static LangManager _instance;
-
-  LangManager._internal();
 
   static LangManager _getInstance() {
     if (_instance == null) {
@@ -30,43 +24,89 @@ class LangManager {
     return _instance;
   }
 
-  /// 语言状态通知action
-  String get stateAction => "9dd73c84f424446f94d6503e629174d8";
-
   /// lang type config key
-  String get langTypeConfigKey => "2d94b1ab596a34e7";
+  String get _langTypeConfigKey => "2d94b1ab596a34e7";
 
   //当前语言
   Locale _currentLocale;
-  LangEntry _langEntry;
+  Map<String, dynamic> _textMap = {};
   OnLangConfig _langConfig;
+  Map<String, LangEntry> _supportLangMap = {};
+  bool _isUpdateSupportLang = false;
+  LangEntry _defaultLang;
+  LangEntry _tempDefaultLang;
+  Map<int, OnLangChangeState> _langStateDispatchs = {};
+  List<Locale> _supportLocales = [];
+  LangEntry _currentLang;
+  List<LangConfigEntry> _configEntries;
+  LangConfigEntry _cacheConfigEntry;
+  String _langData;
 
-  //被加载的语言临时数据
-  Map<String, String> _temMap = {};
+  LangManager._internal() {
+    _defaultLang = LangEntry(langCode: "zh", countryCode: "CN");
+    _reset();
+  }
 
-  //托底默认语言
-  Map<String, String> _defaultLang = {"code": "en", "country_code": "US"};
+  void addChangeState(int hashCode, OnLangChangeState langState) {
+    _langStateDispatchs[hashCode] = langState;
+  }
 
-  /// 切换本地化语言
+  void removeChangeState(int hashCode) {
+    _langStateDispatchs.remove(hashCode);
+  }
+
+  /// region 切换本地化语言
   void notifyAll(Locale locale) async {
     if (locale == null) {
       return;
     }
-    _temMap.clear();
-    _langEntry = await getLangMap(locale);
-    CloudEBus.instance.dispatch(stateAction, params: locale);
+    _reset();
+    await getLangData(locale);
+    _langStateDispatchs.forEach((key, value) {
+      value.dispatchLangState(locale);
+    });
   }
 
-  void setLangEntry(LangEntry entry) {
-    this._langEntry = entry;
+  void _reset() {
+    _textMap.clear();
+    _currentLocale = null;
+    _currentLang = null;
+    _cacheConfigEntry = null;
+    _langData = "";
   }
 
-  Map<String, String> get enLang => _defaultLang;
+  /// endregion
 
-  /// 获取语言配置对象
+  /// region 注册配置项
+
+  List<LangConfigEntry> _getLangEntries() {
+    if (_configEntries == null) {
+      var config = langConfig();
+      _configEntries = config.langEntries() ?? [];
+    }
+    return _configEntries;
+  }
+
+  /// [config] OnLangConfig实现类
+  void registerConfig<T extends OnLangConfig>(T config) {
+    if (config == null) {
+      return;
+    }
+    ConfigManager.instance.addConfig(_langTypeConfigKey, config);
+    var langEntries = _getLangEntries();
+    if (langEntries?.length ?? 0 == _supportLangMap.length) {
+      _isUpdateSupportLang = false;
+    } else {
+      _isUpdateSupportLang = true;
+    }
+  }
+
+  /// endregion
+
+  /// region 获取语言配置对象
   OnLangConfig langConfig() {
     if (_langConfig == null) {
-      var config = ConfigManager.instance.getConfig(langTypeConfigKey);
+      var config = ConfigManager.instance.getConfig(_langTypeConfigKey);
       if (config is OnLangConfig) {
         _langConfig = config;
       }
@@ -74,84 +114,198 @@ class LangManager {
     return _langConfig;
   }
 
-  Locale _getCurrentLocale(OnLangConfig config, Locale locale) {
-    if (locale?.languageCode?.isEmptyString ?? true) {
-      _temMap.clear();
-      if (config == null) {
-        _currentLocale = Locale(_defaultLang["code"], _defaultLang["country_code"]);
-      } else {
-        var lang = config.defaultLang() ?? _defaultLang;
-        _currentLocale = Locale(lang["code"], lang["country_code"]);
+  /// endregion
+
+  /// region 获取支持的语言
+  bool _checkSupportLang() {
+    if (_isUpdateSupportLang || _supportLangMap.isEmptyMap()) {
+      _isUpdateSupportLang = true;
+    }
+    return _isUpdateSupportLang;
+  }
+
+  Map<String, LangEntry> _supportLang() {
+    if (!_checkSupportLang()) {
+      _isUpdateSupportLang = false;
+      return _supportLangMap;
+    }
+    var langEntries = _getLangEntries();
+    if (langEntries.isEmptyList) {
+      _isUpdateSupportLang = true;
+      return {};
+    }
+    _supportLangMap.clear();
+    langEntries.forEach((element) {
+      _supportLangMap[element.langCode] = LangEntry(langCode: element.langCode, countryCode: element.countryCode);
+    });
+    _isUpdateSupportLang = false;
+    return _supportLangMap;
+  }
+
+  Map<String, LangEntry> get supportLang => _supportLang();
+
+  /// endregion
+
+  /// region 获取默认语言
+
+  LangEntry _getDefaultLang() {
+    if (_tempDefaultLang != null) {
+      return _tempDefaultLang;
+    }
+    var langEntries = _getLangEntries();
+    if (langEntries.isEmptyList) {
+      return _defaultLang;
+    }
+    langEntries.forEach((element) {
+      if (element.isDefault ?? false) {
+        _tempDefaultLang = LangEntry(langCode: element.langCode, countryCode: element.countryCode);
+        return;
       }
+    });
+    return _tempDefaultLang;
+  }
+
+  LangEntry get defaultLang => _getDefaultLang();
+
+  /// endregion
+
+  /// region 获取当前被使用的语言
+
+  Locale _getCurrentLocale(OnLangConfig config, Locale locale) {
+    if ((locale?.languageCode?.isEmptyString ?? true) || config == null) {
+      var defaultLang = _getDefaultLang();
+      _currentLocale = Locale(defaultLang.langCode, defaultLang.countryCode);
     } else if (_currentLocale?.languageCode != locale?.languageCode) {
-      //如果未找到则取配置中的默认语言
-      if (config != null) {
-        var supportLang = config.supportLang() ?? {};
-        if (supportLang.containsKey(locale?.languageCode ?? "")) {
-          _temMap.clear();
+      var langEntries = _getLangEntries();
+      langEntries?.forEach((element) {
+        if (element.langCode == locale?.languageCode) {
           _currentLocale = locale;
+          return;
         }
+      });
+      if (_currentLocale == null) {
+        var defaultLang = _getDefaultLang();
+        _currentLocale = Locale(defaultLang.langCode, defaultLang.countryCode);
       }
     }
     return _currentLocale;
   }
 
-  void setCurrentLocale(Locale locale) {
-    this._currentLocale = locale;
+  Locale currentLocale(Locale locale) {
+    return _getCurrentLocale(langConfig(), locale);
   }
 
-  Future<LangEntry> getLangMap(Locale _locale) async {
-    var config = langConfig();
-    var locale = _getCurrentLocale(config, _locale);
-    if (_langEntry != null && _langEntry.code == locale.languageCode && !_langEntry.map.isEmptyMap()) {
-      return _langEntry;
-    }
-    var path = config?.langPackage(locale.languageCode) ?? "";
-    if (path.isEmptyString) {
-      _temMap.clear();
-      return LangEntry();
-    }
-    try {
-      //语言文件不存在则表示不支持语言加载默认语言
-      return _loadAssetsLang(path, locale);
-    } catch (e) {
-      _temMap.clear();
-      return _getDefaultLangEntry(config);
-    }
-  }
-
-  Future<LangEntry> _loadAssetsLang(String path, Locale locale) async {
-    String jsonLang = await rootBundle.loadString(path);
-    var map = JsonUtils.fromJson(jsonLang);
-    _langEntry = LangEntry(code: locale.languageCode, map: map);
-    return _langEntry;
-  }
-
-  Future<LangEntry> _getDefaultLangEntry(OnLangConfig config) async {
-    try {
-      var lang = config.defaultLang() ?? _defaultLang;
-      _currentLocale = Locale(lang["code"], lang["country_code"]);
-      var path = config?.langPackage(_currentLocale.languageCode) ?? "";
-      if (path.isEmptyString) {
-        return LangEntry();
+  LangEntry _getCurrentLang() {
+    if (_currentLang == null) {
+      if (_currentLocale != null) {
+        _currentLang = LangEntry(langCode: _currentLocale.languageCode, countryCode: _currentLocale.countryCode);
+      } else {
+        var lang = defaultLang;
+        _currentLang = LangEntry(langCode: lang.langCode, countryCode: lang.countryCode);
       }
-      return _loadAssetsLang(path, _currentLocale);
-    } catch (e) {
-      return LangEntry();
     }
+    return _currentLang;
   }
 
-  /// 获取对应语言内容
+  LangEntry get currentLang => _getCurrentLang();
+
+  /// endregion
+
+  /// region 绑定本地语言
+  void bindCurrentLocale(Locale locale) async {
+    await getLangData(locale);
+    var config = langConfig();
+    _getCurrentLocale(config, locale);
+  }
+
+  /// endregion
+
+  /// region 本地化语言
+  /// 获取支持本地化语言
+  List<Locale> _getSupportLocales() {
+    if (_supportLocales.isNotEmptyList) {
+      return _supportLocales;
+    }
+    var entries = supportLang?.entries;
+    entries?.forEach((element) {
+      var entry = element.value;
+      _supportLocales.add(Locale(entry.langCode, entry.countryCode));
+    });
+    return _supportLocales;
+  }
+
+  List<Locale> get supportedLocale => _getSupportLocales();
+
+  /// 判断本地语言是否支持
+  /// [deviceLocale] 当前设备语言
+  /// [supportedLocals] 设置的语言
+  bool isSupported(Locale deviceLocale) {
+    var locales = supportedLocale;
+    if (deviceLocale == null || locales.isEmptyList) {
+      return false;
+    }
+    bool flag = false;
+    locales?.forEach((element) {
+      if (element.languageCode == deviceLocale.languageCode) {
+        flag = true;
+        return;
+      }
+    });
+    return flag;
+  }
+
+  /// endregion
+
+  /// 获取语言数据
+  Future<String> getLangData(Locale _locale) async {
+    if (_langData.isNotEmptyString) {
+      return _langData;
+    }
+    var configLang = _getCacheConfigLang();
+    if (configLang?.unique?.isEmptyString ?? true) {
+      return "";
+    }
+    _langData = await MmkvUtils.instance.getString(configLang.unique);
+    return _langData;
+  }
+
+  /// region 获取对应语言内容
+  LangConfigEntry _getCacheConfigLang() {
+    if (_cacheConfigEntry == null) {
+      var lang = currentLang;
+      var entries = _getLangEntries();
+      _cacheConfigEntry = entries?.firstWhere((element) => element.langCode == lang.langCode);
+    }
+    return _cacheConfigEntry;
+  }
+
+  void _parsingData() {
+    if (_langData.isEmptyJson) {
+      return;
+    }
+    var map = JsonUtils.fromJson(_langData);
+    if (map.isEmptyMap()) {
+      return;
+    }
+    _textMap.addAll(map);
+  }
+
   /// [key] 语言关键信息key
   String value(String key) {
     if (key.isEmptyString) {
       return "";
     }
-    if (_temMap.containsKey(key)) {
-      return _temMap.getValue(key, "");
+    if (_textMap.isEmptyMap()) {
+      _parsingData();
+    }
+    if (_textMap.containsKey(key)) {
+      var text = _textMap.getValue<String>(key);
+      if (text.isNotEmptyString) {
+        return text;
+      }
     }
     var _array = key.split(".") ?? [];
-    var _dict = _langEntry?.map ?? {};
+    var _dict = _textMap ?? {};
     var retValue = "";
     try {
       _array.forEach((item) {
@@ -164,45 +318,11 @@ class LangManager {
           retValue = _dict[item];
         }
       });
-      if (retValue.isNotEmptyString) {
-        _temMap[key] = retValue ?? "";
-      }
       return retValue ?? "";
     } catch (e) {
       return "";
     }
   }
 
-  /// 获取支持本地化语言
-  List<Locale> get supportedLocale => langConfig()?.supportedLocale() ?? [];
-
-  /// 判断本地语言是否支持
-  /// [deviceLocale] 当前设备语言
-  /// [supportedLocals] 设置的语言
-  bool isSupported(Locale deviceLocale, List<Locale> supportedLocals) {
-    if (deviceLocale == null || supportedLocale.isEmptyList) {
-      return false;
-    }
-    bool flag = false;
-    supportedLocale?.forEach((element) {
-      if (element.languageCode == deviceLocale.languageCode) {
-        flag = true;
-        return;
-      }
-    });
-    return flag;
-  }
-
-  /// 获取默认语言
-  Locale defaultLang() {
-    var config = langConfig();
-    if (config == null) {
-      return Locale(_defaultLang["code"], _defaultLang["country_code"]);
-    }
-    var defaultLang = config.defaultLang() ?? {};
-    if (defaultLang["code"].isEmptyString) {
-      return Locale(_defaultLang["code"], _defaultLang["country_code"]);
-    }
-    return Locale(defaultLang["code"], defaultLang["country_code"]);
-  }
+  /// endregion
 }

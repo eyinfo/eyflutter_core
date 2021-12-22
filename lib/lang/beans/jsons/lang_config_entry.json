@@ -1,0 +1,18 @@
+{
+  "langCode": {
+    "define_type": "String",
+    "describe": "语言编码"
+  },
+  "countryCode": {
+    "define_type": "String",
+    "describe": "国家编码"
+  },
+  "isDefault": {
+    "define_type": "bool",
+    "describe": "是否默认语言"
+  },
+  "unique": {
+    "define_type": "String",
+    "describe": "语言包标识"
+  }
+}
