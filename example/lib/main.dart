@@ -1,4 +1,4 @@
-
+import 'package:eyflutter_core_example/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,15 +15,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: const Center(
-          child: Text('Running on:'),
-        ),
-      ),
+    return const MaterialApp(
+      home: Home(),
     );
   }
 }
