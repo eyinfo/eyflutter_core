@@ -1,10 +1,9 @@
 import 'dart:async';
 
-typedef CountdownCallback = void Function(
-    int days, int hours, int minutes, int seconds);
+typedef CountdownCallback = void Function(int days, int hours, int minutes, int seconds);
 
 class CountdownTimer {
-  Timer _timer;
+  Timer? _timer;
 
   //以下单位按毫秒计
   int _secondUnit = 1000;
@@ -28,7 +27,7 @@ class CountdownTimer {
   /// 开始倒计时
   /// [restOfTime] 剩余时间(单位毫秒)
   /// [callback] 回调(null时不做计时处理)
-  void startCountdown(int restOfTime, CountdownCallback callback) {
+  void startCountdown(int restOfTime, CountdownCallback? callback) {
     if (restOfTime <= 0 || callback == null) {
       return;
     }
@@ -60,8 +59,8 @@ class CountdownTimer {
 
   /// 停止倒计时
   void stop() {
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
+    if (_timer?.isActive ?? false) {
+      _timer?.cancel();
     }
     _timer = null;
     _isFinish = true;

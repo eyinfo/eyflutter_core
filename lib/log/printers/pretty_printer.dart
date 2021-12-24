@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 import 'package:eyflutter_core/log/beans/log_event.dart';
 import 'package:eyflutter_core/log/beans/log_response.dart';
 import 'package:eyflutter_core/log/enums/level.dart';
@@ -93,7 +94,7 @@ class PrettyPrinter implements ILogPrinter {
     for (var line in lines) {
       var match = stackTraceRegex.matchAsPrefix(line);
       if (match != null) {
-        var group = match.group(2);
+        var group = match.group(2) ?? "";
         if (group.startsWith('package:logger') || group.startsWith(":0:12")) {
           continue;
         }
@@ -108,14 +109,14 @@ class PrettyPrinter implements ILogPrinter {
     }
 
     if (formatted.isEmpty) {
-      return null;
+      return "";
     } else {
       return formatted.join('\n');
     }
   }
 
   ///堆栈信息解析
-  String _stackMessage(Level level, StackTrace stackTrace) {
+  String _stackMessage(Level level, StackTrace? stackTrace) {
     if (methodCount <= 0) {
       return "";
     }
@@ -124,7 +125,7 @@ class PrettyPrinter implements ILogPrinter {
 
   AnsiColor _getLevelColor(Level level) {
     if (colors) {
-      return levelColors[level];
+      return levelColors[level] ?? AnsiColor.none();
     } else {
       return AnsiColor.none();
     }
@@ -133,9 +134,9 @@ class PrettyPrinter implements ILogPrinter {
   AnsiColor _getErrorColor(Level level) {
     if (colors) {
       if (level == Level.wtf) {
-        return levelColors[Level.wtf].toBg();
+        return levelColors[Level.wtf]?.toBg() ?? AnsiColor.none();
       } else {
-        return levelColors[Level.error].toBg();
+        return levelColors[Level.error]?.toBg() ?? AnsiColor.none();
       }
     } else {
       return AnsiColor.none();
@@ -144,7 +145,7 @@ class PrettyPrinter implements ILogPrinter {
 
   String _getEmoji(Level level) {
     if (printEmojis) {
-      return emojis[level];
+      return emojis[level] ?? "";
     } else {
       return '';
     }
@@ -179,7 +180,7 @@ class PrettyPrinter implements ILogPrinter {
   }
 
   List<String> _formatAndPrint(
-      Level level, String message, dynamic errorMarkedMessage, String exception, String stacktrace, String time) {
+      Level level, String message, dynamic errorMarkedMessage, String? exception, String? stacktrace, String? time) {
     List<String> buffer = [];
     var color = _getLevelColor(level);
     buffer.add(color(_topBorder));
@@ -238,7 +239,7 @@ class PrettyPrinter implements ILogPrinter {
       var message = _stringifyMessage(logEvent.message);
       var stack = _stackMessage(logEvent.level, logEvent.stackTrace);
       String time = printTime ? _getTime(logEvent.dateTime ?? DateTime.now()) : "";
-      String tag = (logEvent.tag == null || logEvent.tag.isEmpty) ? "" : "${logEvent.tag}>>>";
+      String tag = logEvent.tag.isEmptyString ? "" : "${logEvent.tag}>>>";
       String exception = (logEvent.exception == null ? "" : logEvent.exception.toString());
       List<String> lines =
           _formatAndPrint(logEvent.level, '$tag$message', logEvent.errorMarkedMessage, exception, stack, time);

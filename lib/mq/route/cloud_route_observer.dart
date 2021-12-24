@@ -24,22 +24,19 @@ mixin OnRouteEventIntercept {
   /// 路由改变监听
   /// [route] 路由对象
   /// [isDispose] 是否被销毁的路由
-  void onRouteChanged(Route route, bool isDispose);
+  void onRouteChanged(Route? route, bool isDispose);
 }
 
 class CloudRouteObserver extends NavigatorObserver {
   factory CloudRouteObserver() => _getInstance();
 
   static CloudRouteObserver get instance => _getInstance();
-  static CloudRouteObserver _instance;
+  static CloudRouteObserver? _instance;
 
   CloudRouteObserver._internal();
 
   static CloudRouteObserver _getInstance() {
-    if (_instance == null) {
-      _instance = new CloudRouteObserver._internal();
-    }
-    return _instance;
+    return _instance ??= new CloudRouteObserver._internal();
   }
 
   List<String> _routes = [];
@@ -47,24 +44,20 @@ class CloudRouteObserver extends NavigatorObserver {
   static Map<String, RouteStateNotification> _notificationMap = {};
 
   //路由事件拦截器
-  static OnRouteEventIntercept _routeEvent;
+  static OnRouteEventIntercept? _routeEvent;
 
   void setRouteEvent(OnRouteEventIntercept routeEventIntercept) {
     _routeEvent = routeEventIntercept;
   }
 
-  OnRouteEventIntercept get routeEvent => _routeEvent;
+  OnRouteEventIntercept? get routeEvent => _routeEvent;
 
   /// 添加路由状态通知(该方法框架内部调用)
   void addNotification(String routeName, dynamic stateInstance) {
-    if (stateInstance is! RouteStateNotification) {
+    if (routeName.isEmptyString || (stateInstance is! RouteStateNotification)) {
       return;
     }
-    RouteStateNotification notification = stateInstance as RouteStateNotification;
-    if (routeName.isEmptyString || notification == null) {
-      return;
-    }
-    _notificationMap[routeName] = notification;
+    _notificationMap[routeName] = stateInstance;
   }
 
   /// 移除路由状态通知(该方法框架内部调用)
@@ -79,37 +72,41 @@ class CloudRouteObserver extends NavigatorObserver {
   /// [routePath] 路由地址
   /// [action] 数据回传识别标识(可为空)
   /// [result] 回传通知参数
-  void notificationState(String routePath, Map<String, dynamic> result, {String action}) {
+  void notificationState(String routePath, Map<String, dynamic> result, {String? action}) {
     if (routePath.isEmptyString || !_notificationMap.containsKey(routePath)) {
       return;
     }
     var notification = _notificationMap[routePath];
-    notification?.onStateResult(action, result);
+    notification?.onStateResult(action ?? "", result);
   }
 
   @override
-  void didPush(Route route, Route previousRoute) {
+  void didPush(Route route, Route? previousRoute) {
     if (_goIntercept(route)) {
-      navigator.removeRoute(route);
+      navigator?.removeRoute(route);
       return;
     }
-    var routeSign = "${(route?.settings?.name ?? "")}#hash#${route?.hashCode ?? 0}";
+    var routeSign = "${(route.settings.name ?? "")}#hash#${route.hashCode}";
     if (_routes.contains(routeSign)) {
       _routes.remove(routeSign);
     }
     _routes.insert(0, routeSign);
     _routeMap[routeSign] = route;
     _callRouteChange(route, false);
+    super.didPush(route, previousRoute);
   }
 
   @override
-  void didReplace({Route newRoute, Route oldRoute}) {
-    if (_goIntercept(newRoute)) {
-      navigator.removeRoute(newRoute);
+  void didReplace({Route? newRoute, Route? oldRoute}) {
+    if (newRoute == null) {
       return;
     }
-    var oldSign = "${(oldRoute?.settings?.name ?? "")}#hash#${oldRoute?.hashCode ?? 0}";
-    var newSign = "${(newRoute?.settings?.name ?? "")}#hash#${newRoute?.hashCode ?? 0}";
+    if (_goIntercept(newRoute)) {
+      navigator?.removeRoute(newRoute);
+      return;
+    }
+    var oldSign = "${(oldRoute?.settings.name ?? "")}#hash#${oldRoute?.hashCode ?? 0}";
+    var newSign = "${(newRoute.settings.name ?? "")}#hash#${newRoute.hashCode}";
     if (_routes.contains(oldSign)) {
       var index = _routes.indexOf(oldSign);
       _routeMap.remove(oldSign);
@@ -119,7 +116,9 @@ class CloudRouteObserver extends NavigatorObserver {
       //更新notification集合中新的key
       if (_notificationMap.containsKey(oldSign)) {
         var notification = _notificationMap.remove(oldSign);
-        _notificationMap[newSign] = notification;
+        if (notification != null) {
+          _notificationMap[newSign] = notification;
+        }
       }
     } else {
       _routes.insert(0, newSign);
@@ -128,7 +127,7 @@ class CloudRouteObserver extends NavigatorObserver {
     _callRouteChange(newRoute, false);
   }
 
-  void _callRouteChange(Route route, bool isDispose) {
+  void _callRouteChange(Route? route, bool isDispose) {
     routeEvent?.onRouteChanged(route, isDispose);
   }
 
@@ -136,7 +135,7 @@ class CloudRouteObserver extends NavigatorObserver {
     if (routeEvent == null) {
       return false;
     }
-    var argObj = route?.settings?.arguments;
+    var argObj = route.settings.arguments;
     var arguments = Map<String, dynamic>();
     if (argObj is Map<String, dynamic>) {
       arguments.addAll(argObj);
@@ -154,22 +153,24 @@ class CloudRouteObserver extends NavigatorObserver {
     if (arguments.containsKey("title")) {
       title = "${arguments.remove("title")}";
     }
-    var routeName = route?.settings?.name;
+    var routeName = route.settings.name ?? "";
     return routeEvent?.onGoIntercept(routeName, url: url, title: title, arguments: arguments) ?? false;
   }
 
   @override
-  void didPop(Route route, Route previousRoute) {
+  void didPop(Route route, Route? previousRoute) {
     _remove(route);
+    super.didPop(route, previousRoute);
   }
 
   @override
-  void didRemove(Route route, Route previousRoute) {
+  void didRemove(Route route, Route? previousRoute) {
     _remove(route);
+    super.didRemove(route, previousRoute);
   }
 
-  void _remove(Route route) {
-    var routeSign = "${(route?.settings?.name ?? "")}#hash#${route?.hashCode ?? 0}";
+  void _remove(Route? route) {
+    var routeSign = "${(route?.settings.name ?? "")}#hash#${route?.hashCode}";
     if (_routes.contains(routeSign)) {
       _routes.remove(routeSign);
     }
@@ -221,7 +222,7 @@ class CloudRouteObserver extends NavigatorObserver {
 
   /// 移除路由缓存
   void remove(String routePath) {
-    Route route;
+    Route? route;
     _routeMap.forEach((key, value) {
       var signList = key.split("#hash#");
       if (signList[0] == routePath) {
@@ -229,8 +230,6 @@ class CloudRouteObserver extends NavigatorObserver {
         return;
       }
     });
-    if (route != null) {
-      _remove(route);
-    }
+    _remove(route);
   }
 }

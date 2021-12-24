@@ -7,13 +7,10 @@ class MemoryUtils {
   factory MemoryUtils() => _getInstance();
 
   static MemoryUtils get instance => _getInstance();
-  static MemoryUtils _instance;
+  static MemoryUtils? _instance;
 
   static MemoryUtils _getInstance() {
-    if (_instance == null) {
-      _instance = new MemoryUtils._internal();
-    }
-    return _instance;
+    return _instance ??= new MemoryUtils._internal();
   }
 
   static Map<String, dynamic> _map = new HashMap<String, dynamic>();
@@ -40,7 +37,7 @@ class MemoryUtils {
     if (value == null || value is! String) {
       return "";
     }
-    return value as String;
+    return value;
   }
 
   /// 获取缓存num
@@ -79,7 +76,7 @@ class MemoryUtils {
   void removeContainKey(String containKey) {
     Set<String> keys = new HashSet<String>();
     _map.keys.forEach((String key) {
-      if (key != null && key.contains(containKey)) {
+      if (key.contains(containKey)) {
         keys.add(key);
       }
     });

@@ -1,12 +1,13 @@
 import 'dart:collection';
 
+import 'package:eyflutter_core/kit/utils/map/map_extension.dart';
 import 'package:eyflutter_core/kit/utils/set/list_extention.dart';
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 import "package:intl/intl.dart";
 
 extension ConvertUtilsStringExtension on String {
   /// 字符串参数转map对象
-  MapEntry<String, dynamic> toMapEntry(String splitChar, bool urlDecode) {
+  MapEntry<String, dynamic>? toMapEntry(String splitChar, bool urlDecode) {
     if (this.isEmptyString) {
       return null;
     }
@@ -26,22 +27,24 @@ extension ConvertUtilsStringExtension on String {
   /// [firstSplit]一级分隔符
   /// [secondSplit]二级分隔符
   /// [isDecode]value是否需要Uri.decodeComponent解码
-  Map<String, dynamic> toMap(String firstSplit, {String secondSplit = "", bool isDecode}) {
+  Map<String, dynamic> toMap(String firstSplit, {String secondSplit = "", bool? isDecode}) {
     if (this.isEmptyString || firstSplit.isEmptyString) {
       return new LinkedHashMap<String, dynamic>();
     }
-    var items =
-        this.split(firstSplit).map((e) => e.toMapEntry(secondSplit, isDecode)).where((element) => element != null);
-    return LinkedHashMap.fromEntries(items);
+    var items = this
+        .split(firstSplit)
+        .map((e) => e.toMapEntry(secondSplit, isDecode ?? false))
+        .where((element) => element != null);
+    return LinkedHashMap.fromIterable(items);
   }
 
   /// 根据连接字符拼接的字符串转换成list
   /// 示例:"2&71&3&25"
   /// [connector]连接符
   /// [isDecode]value是否需要Uri.decodeComponent解码
-  List<String> toList(String connector, {bool isDecode}) {
-    if (connector.isEmptyString || this == null) {
-      return this == null ? [] : [this];
+  List<String> toList(String connector, {bool? isDecode}) {
+    if (connector.isEmptyString || this.isEmptyString) {
+      return [];
     }
     return this.split(connector);
   }
@@ -52,7 +55,8 @@ extension ConvertUtilsStringExtension on String {
   /// [firstSplit]一级分隔符
   /// [secondSplit]二级分隔符
   /// [isDecode]value是否需要Uri.decodeComponent解码
-  Map<String, dynamic> toMapByIdentify(String startChar, String firstSplit, {String secondSplit = "", bool isDecode}) {
+  Map<String, dynamic> toMapByIdentify(String startChar, String firstSplit,
+      {String secondSplit = "", bool isDecode = false}) {
     if (this.isEmptyString) {
       return {};
     }
@@ -76,7 +80,7 @@ extension ConvertUtilsStringExtension on String {
     var targetUri = Uri.parse(targetUrl);
     var refUri = Uri.parse(this);
     var parameters = refUri.queryParameters;
-    if (parameters == null || parameters.isEmpty) {
+    if (parameters.isEmptyMap()) {
       return targetUrl;
     }
     //原uri->map不能修改
@@ -94,7 +98,7 @@ extension ConvertUtilsStringExtension on String {
   /// 数字字符转换为num(eg. for long float)
   /// [defaultValue]默认值
   num toNum({num defaultValue = 0}) {
-    if (this == null) {
+    if (this.isEmptyString) {
       return defaultValue;
     }
     return num.tryParse(this) ?? defaultValue;

@@ -9,7 +9,7 @@ class JsonUtils {
 
   /// 对象转json
   /// [obj]需要转换的对象
-  static String toJson(Object obj) {
+  static String toJson(Object? obj) {
     if (obj == null) {
       return "";
     }
@@ -60,9 +60,9 @@ class JsonUtils {
     var matcher = RegExp(regex, multiLine: true);
     var matches = matcher.allMatches(json);
     String value = "";
-    matches?.forEach((element) {
+    matches.forEach((element) {
       //避免null出错
-      value = element.groupCount > 0 ? (element.group(0) + "").trim() : "";
+      value = element.groupCount > 0 ? (element.group(0) ?? "").trim() : "";
       //根据:分隔
       int index = value.indexOf(":");
       if (index >= 0 && (index + 1) < value.length) {

@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 class ConstListView<T extends ConstButton> extends StatelessWidget {
   final int itemCount;
 
-  final double itemExtent;
+  final double? itemExtent;
 
   final List<T> buttons;
 
-  const ConstListView({Key key, this.itemCount, this.itemExtent, this.buttons}) : super(key: key);
+  const ConstListView({Key? key, this.itemCount = 0, this.itemExtent, this.buttons = const []}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +29,10 @@ class ConstListView<T extends ConstButton> extends StatelessWidget {
 }
 
 class ConstButton extends StatelessWidget {
-  final VoidCallback onLongPress;
-  final String text;
+  final VoidCallback? onLongPress;
+  final String? text;
 
-  const ConstButton({Key key, this.onLongPress, this.text}) : super(key: key);
+  const ConstButton({Key? key, this.onLongPress, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

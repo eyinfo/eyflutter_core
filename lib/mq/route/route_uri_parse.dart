@@ -4,26 +4,26 @@ class RouteUriParse {
   //包含query全路径
   final String routeUri;
 
-  Uri _uri;
+  Uri? _uri;
 
   RouteUriParse(this.routeUri) {
     _uri = Uri.parse(this.routeUri);
   }
 
   String get scheme {
-    return _uri.scheme;
+    return _uri?.scheme ?? "";
   }
 
   String get host {
-    return _uri.host;
+    return _uri?.host ?? "";
   }
 
   String get path {
-    return _uri.path;
+    return _uri?.path ?? "";
   }
 
   String get userInfo {
-    return _uri.userInfo;
+    return _uri?.userInfo ?? "";
   }
 
   // scheme + host + path
@@ -31,7 +31,7 @@ class RouteUriParse {
     return '$scheme://$host$path';
   }
 
-  List<String> get pathSegments => _uri.pathSegments;
+  List<String> get pathSegments => _uri?.pathSegments ?? [];
 
   String get rootPath {
     var segments = pathSegments;
@@ -41,5 +41,5 @@ class RouteUriParse {
     return "";
   }
 
-  Map<String, String> get queryParameters => _uri.queryParameters;
+  Map<String, String> get queryParameters => _uri?.queryParameters ?? {};
 }

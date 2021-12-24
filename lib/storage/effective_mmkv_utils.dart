@@ -4,7 +4,6 @@ import 'package:eyflutter_core/kit/utils/json_utils.dart';
 import 'package:eyflutter_core/kit/utils/string/json_extension.dart';
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 import 'package:eyflutter_core/storage/mmkv_utils.dart';
-import 'package:flutter/material.dart';
 
 /// 特定时间内数据缓存
 /// 超过缓存时间后下次获取数据自动删除
@@ -12,13 +11,10 @@ class EffectiveMMkvUtils {
   factory EffectiveMMkvUtils() => _getInstance();
 
   static EffectiveMMkvUtils get instance => _getInstance();
-  static EffectiveMMkvUtils _instance;
+  static EffectiveMMkvUtils? _instance;
 
   static EffectiveMMkvUtils _getInstance() {
-    if (_instance == null) {
-      _instance = new EffectiveMMkvUtils._internal();
-    }
-    return _instance;
+    return _instance ??= new EffectiveMMkvUtils._internal();
   }
 
   EffectiveMMkvUtils._internal();
@@ -27,8 +23,8 @@ class EffectiveMMkvUtils {
   /// [cacheKey] 缓存key
   /// [value] 缓存数据
   /// [duration] 缓存时间
-  void putString({@required String cacheKey, String value, Duration duration = const Duration()}) {
-    if (value.isEmptyString || duration == null) {
+  void putString({required String cacheKey, required String value, Duration duration = const Duration()}) {
+    if (value.isEmptyString) {
       return;
     }
     var map = {"startTime": System.currentTimeMillis, "duration": duration.inMilliseconds, "value": value};
@@ -38,18 +34,18 @@ class EffectiveMMkvUtils {
 
   /// 清除缓存
   /// [cacheKey] 缓存key
-  void clean({@required String cacheKey}) {
+  void clean({required String cacheKey}) {
     MmkvUtils.instance.putString(cacheKey, value: "");
   }
 
   /// 获取有效数据
   /// [cacheKey] 缓存key
-  Future<String> getString({@required String cacheKey}) async {
+  Future<String> getString({required String cacheKey}) async {
     var value = await MmkvUtils.instance.getString(cacheKey);
     if (value.isEmptyString || value.isEmptyJson) {
       return "";
     }
-    var map = value.jsonToMap ?? {};
+    var map = value.jsonToMap;
     if (!map.containsKey("startTime") || !map.containsKey("duration") || !map.containsKey("value")) {
       return "";
     }

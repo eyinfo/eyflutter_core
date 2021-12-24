@@ -9,7 +9,7 @@ class EBusItem {
 }
 
 class BaseCloudBus {
-  void addObjectEvent(Map<int, Map<String, EBusItem>> map, dynamic registerObject, {String action, Function method}) {
+  void addObjectEvent(Map<int, Map<String, EBusItem>> map, dynamic registerObject, {String? action, Function? method}) {
     if (registerObject == null || action.isEmptyString || method == null) {
       return;
     }
@@ -17,14 +17,14 @@ class BaseCloudBus {
     var busList = map[registerHashcode];
     if (busList == null) {
       busList = {};
-      busList[action] = EBusItem(action, method);
+      busList[action ?? ""] = EBusItem(action ?? "", method);
       map[registerHashcode] = busList;
     }
     //如果同一对象(即内存地址相同)，直接覆盖
-    busList[action] = EBusItem(action, method);
+    busList[action ?? ""] = EBusItem(action ?? "", method);
   }
 
-  void disposeObjectEvent(Map<int, Map<String, EBusItem>> map, dynamic registerObject, {String action}) {
+  void disposeObjectEvent(Map<int, Map<String, EBusItem>> map, dynamic registerObject, {String? action}) {
     if (registerObject == null || action.isEmptyString) {
       return;
     }
@@ -43,7 +43,7 @@ class BaseCloudBus {
     map.forEach((objectKey, busList) {
       try {
         var bus = busList[action];
-        if (bus != null && bus.method != null) {
+        if (bus != null) {
           if (params == null) {
             bus.method.call();
           } else {
@@ -61,15 +61,12 @@ class CloudEBus extends BaseCloudBus {
   factory CloudEBus() => _getInstance();
 
   static CloudEBus get instance => _getInstance();
-  static CloudEBus _instance;
+  static CloudEBus? _instance;
 
   CloudEBus._internal();
 
   static CloudEBus _getInstance() {
-    if (_instance == null) {
-      _instance = new CloudEBus._internal();
-    }
-    return _instance;
+    return _instance ??= new CloudEBus._internal();
   }
 
   static Map<int, Map<String, EBusItem>> _map = {};
@@ -78,14 +75,14 @@ class CloudEBus extends BaseCloudBus {
   /// [registerObject] 事件订阅所在容器的对象(用于区分同一class实例后不同的内存地址)
   /// [action] 事件发送与接收标识
   /// [method] 事件执行的方法
-  void addEvent(dynamic registerObject, {String action, Function method}) {
+  void addEvent(dynamic registerObject, {String? action, Function? method}) {
     super.addObjectEvent(_map, registerObject, action: action, method: method);
   }
 
   /// 销毁事件对象
   /// [registerObject] 事件订阅所在容器的对象(用于区分同一class实例后不同的内存地址)
   /// [action] 事件发送与接收标识
-  void disposeEvent(dynamic registerObject, {String action}) {
+  void disposeEvent(dynamic registerObject, {String? action}) {
     super.disposeObjectEvent(_map, registerObject, action: action);
   }
 

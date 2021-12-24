@@ -14,15 +14,12 @@ class RouteUtils {
   factory RouteUtils() => _getInstance();
 
   static RouteUtils get instance => _getInstance();
-  static RouteUtils _instance;
+  static RouteUtils? _instance;
 
   RouteUtils._internal();
 
   static RouteUtils _getInstance() {
-    if (_instance == null) {
-      _instance = new RouteUtils._internal();
-    }
-    return _instance;
+    return _instance ??= new RouteUtils._internal();
   }
 
   /// scheme
@@ -37,14 +34,14 @@ class RouteUtils {
 
   /// 获取路由对应组件
   /// [routeName] 路由名称
-  WidgetBuilder getWidget(String routeName) {
+  WidgetBuilder? getWidget(String routeName) {
     return _routeWidgets[routeName];
   }
 
   /// 添加路由组件
   /// [routeName] 路由名称
   /// [widgetBuilder] 组件
-  void addWidget(String routeName, WidgetBuilder widgetBuilder) {
+  void addWidget(String routeName, WidgetBuilder? widgetBuilder) {
     if (routeName.isEmptyString || widgetBuilder == null) {
       return;
     }
@@ -53,7 +50,7 @@ class RouteUtils {
 
   /// 添加路由组件
   void addWidgets(Map<String, dynamic> widgets) {
-    widgets?.forEach((key, value) {
+    widgets.forEach((key, value) {
       addWidget(key, value);
     });
   }
@@ -62,7 +59,7 @@ class RouteUtils {
   /// [routeName] 路由名称
   /// [routeEvent] 用于区分页面路由、事件路由
   /// [arguments] 路由参数
-  String route(String routeName, RouteEvent routeEvent, {Map<String, dynamic> arguments}) {
+  String route(String routeName, RouteEvent routeEvent, {Map<String, dynamic>? arguments}) {
     var path = '${_routeScheme}://${_routeHost}/${routeEvent.name}';
     path = path.appendPath(routeName);
     path = path.appendPath(_queryParameters(arguments));
@@ -72,16 +69,16 @@ class RouteUtils {
   /// 获取页面路由
   /// [routeName] 路由名称
   /// [arguments] 路由参数
-  String routePage(String routeName, {Map<String, dynamic> arguments}) {
+  String routePage(String routeName, {Map<String, dynamic>? arguments}) {
     return route(routeName, RouteEvent.page, arguments: arguments);
   }
 
-  String _queryParameters(Map<String, dynamic> query) {
+  String _queryParameters(Map<String, dynamic>? query) {
     if (query.isEmptyMap()) {
       return '';
     }
     String queryString = '';
-    query.forEach((key, value) {
+    query?.forEach((key, value) {
       if (queryString != '') {
         queryString += '&';
       } else {
@@ -97,7 +94,7 @@ class RouteUtils {
   /// [url] 如果是web页面该项必填
   /// [title] h5标题
   /// [arguments] 参数
-  void go(String routeName, {String url, String title, Map<String, dynamic> arguments}) {
+  void go(String routeName, {String? url, String? title, Map<String, dynamic>? arguments}) {
     if (ClickEvent.isFastClick()) {
       return;
     }
@@ -111,18 +108,18 @@ class RouteUtils {
     if (title.isNotEmptyString) {
       parameters["title"] = title;
     }
-    if (!arguments.isEmptyMap()) {
+    if (arguments != null && arguments.isNotEmpty) {
       parameters.addAll(arguments);
     }
-    CloudRouteObserver.instance.navigator.pushNamed(routeName, arguments: parameters);
+    CloudRouteObserver.instance.navigator?.pushNamed(routeName, arguments: parameters);
   }
 
-  bool _goIntercept(String routeName, {String url, String title, Map<String, dynamic> arguments}) {
+  bool _goIntercept(String routeName, {String? url, String? title, Map<String, dynamic>? arguments}) {
     var routeEvent = CloudRouteObserver.instance.routeEvent;
     if (routeEvent == null) {
       return false;
     }
-    return routeEvent.onGoIntercept(routeName, url: url, title: title, arguments: arguments) ?? false;
+    return routeEvent.onGoIntercept(routeName, url: url ?? "", title: title ?? "", arguments: arguments ?? {});
   }
 
   /// 销毁页面
@@ -137,7 +134,7 @@ class RouteUtils {
     if (routes.isEmptyList) {
       return;
     }
-    CloudRouteObserver.instance.navigator.removeRoute(routes.last);
+    CloudRouteObserver.instance.navigator?.removeRoute(routes.last);
   }
 
   /// 销毁页面到根页面
@@ -149,7 +146,7 @@ class RouteUtils {
     var rootNames = rootRouteNames();
     routes.forEach((element) {
       if (!rootNames.contains(element.settings.name)) {
-        CloudRouteObserver.instance.navigator.removeRoute(element);
+        CloudRouteObserver.instance.navigator?.removeRoute(element);
       }
     });
   }
@@ -183,7 +180,7 @@ class RouteUtils {
   /// 回传数据(接收对象需要实现RouteStateNotification)
   /// [routeName] 数据回传的目标路由名称
   /// [arguments] 回传数据
-  void postBack(String routeName, {String action, Map<String, dynamic> arguments}) {
+  void postBack(String routeName, {String? action, Map<String, dynamic>? arguments}) {
     if (routeName.isEmptyString) {
       return;
     }
@@ -211,13 +208,13 @@ class RouteUtils {
     //默认取第一个参数
     Route route = routes.first;
     Map<String, String> _arguments = {};
-    var arguments = route?.settings?.arguments;
+    var arguments = route.settings.arguments;
     if (arguments is RouteUriParse) {
       RouteUriParse routerUrlParse = arguments;
-      _arguments = routerUrlParse?.queryParameters ?? {};
-    } else if ((arguments is LinkedHashMap<String, String>) && _arguments != null) {
+      _arguments = routerUrlParse.queryParameters;
+    } else if (arguments is LinkedHashMap<String, String>) {
       LinkedHashMap<String, String> map = arguments;
-      map?.forEach((key, value) {
+      map.forEach((key, value) {
         _arguments[key] = value;
       });
     }

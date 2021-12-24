@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 import 'package:eyflutter_core/log/beans/crash_info.dart';
 import 'package:eyflutter_core/log/logger.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,11 +16,10 @@ typedef OnCompletedCall = void Function();
 class CrashHandler {
   CrashHandler._();
 
-  static CrashHandler _instance;
+  static CrashHandler? _instance;
 
   static CrashHandler get instance {
-    _instance ??= CrashHandler._();
-    return _instance;
+    return _instance ??= CrashHandler._();
   }
 
   /// 构建crash节点
@@ -29,27 +29,27 @@ class CrashHandler {
   /// [crashCollectCall] crash收集回调
   /// [completedCall] 处理完成回调
   void build(Widget app,
-      {OnReleaseLogReport report,
-      int environment,
-      OnCrashCollectCall crashCollectCall,
-      OnCompletedCall completedCall}) {
+      {OnReleaseLogReport? report,
+      int environment = 0,
+      OnCrashCollectCall? crashCollectCall,
+      OnCompletedCall? completedCall}) {
     const bool inProduction = bool.fromEnvironment("dart.vm.product");
     FlutterError.onError = (FlutterErrorDetails details) {
       if (inProduction) {
-        Zone.current.handleUncaughtError(details.exception, details.stack);
+        Zone.current.handleUncaughtError(details.exception, details.stack ?? StackTrace.empty);
       } else {
         FlutterError.dumpErrorToConsole(details);
       }
     };
-    runZoned(() => runApp(app), onError: (error, stackTrace) {
+    runZonedGuarded(() => runApp(app), (Object error, StackTrace stack) {
       if (completedCall != null) {
         completedCall();
       }
       if (crashCollectCall == null) {
         return;
       }
-      var crash = crashCollectCall(error);
-      if (crash == null || crash.error == null || crash.error.isEmpty) {
+      CrashInfo crash = crashCollectCall(error);
+      if (crash.error.isEmptyString) {
         return;
       }
       if (environment == 0 && report != null) {
@@ -65,7 +65,7 @@ class CrashHandler {
   }
 
   bool _checkError(String errorType) {
-    var type = errorType ?? "";
+    var type = errorType;
     if (type == "DioError") {
       return false;
     }

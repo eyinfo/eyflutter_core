@@ -1,3 +1,4 @@
+import 'package:eyflutter_core/eyflutter_core.dart';
 import 'package:flutter/material.dart';
 
 class NetPage extends StatefulWidget {
@@ -10,12 +11,18 @@ class NetPage extends StatefulWidget {
 class _NetPageState extends State<NetPage> {
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    if ("".isEmptyString) {}
+    return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Text("dddd"),
+        appBar: AppBar(
+          title: const Text('网络请求'),
+        ),
+        body: const Text("test"),
       ),
       top: false,
     );
   }
+
+  void getRequest() {}
 }

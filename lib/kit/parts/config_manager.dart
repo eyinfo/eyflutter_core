@@ -2,15 +2,12 @@ class ConfigManager {
   factory ConfigManager() => _getInstance();
 
   static ConfigManager get instance => _getInstance();
-  static ConfigManager _instance;
+  static ConfigManager? _instance;
 
   ConfigManager._internal();
 
   static ConfigManager _getInstance() {
-    if (_instance == null) {
-      _instance = new ConfigManager._internal();
-    }
-    return _instance;
+     return _instance ??= new ConfigManager._internal();
   }
 
   Map<String, dynamic> _configMap = {};
@@ -18,7 +15,7 @@ class ConfigManager {
   /// 添加配置项
   /// [key] 必须唯一,定义在各模块中
   /// [value] 配置对象
-  void addConfig(String key, dynamic value) {
+  void addConfig(String? key, dynamic value) {
     if (key == null || key.isEmpty || value == null) {
       return;
     }
@@ -27,7 +24,7 @@ class ConfigManager {
 
   /// 获取配置项
   /// [key] 必须唯一,定义在各模块中
-  dynamic getConfig(String key) {
+  dynamic getConfig(String? key) {
     if (key == null || key.isEmpty) {
       return null;
     }

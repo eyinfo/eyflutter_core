@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:eyflutter_core/kit/utils/num_extension.dart';
+import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
+
 import 'formatter.dart';
 
 class FloatFormatter extends Formatter {
@@ -7,24 +10,24 @@ class FloatFormatter extends Formatter {
   static final _expoRx = new RegExp(r'^[\-\+]?(\d)\.(\d+)e([\-\+]?\d+)$');
   static final _leadingZeroesRx = new RegExp(r'^(0*)[1-9]+');
 
-  double _arg;
-  List<int> _digits = new List<int>();
+  double? _arg;
+  List<int> _digits = <int>[];
   int _exponent = 0;
   int _decimal = 0;
   bool _isNegative = false;
   bool _hasInit = false;
-  String _output;
+  String? _output;
 
   FloatFormatter(this._arg, var formatType, var options) : super(formatType, options) {
-    if (_arg < 0) {
+    if ((_arg ?? 0) < 0) {
       this._isNegative = true;
-      _arg = -_arg;
+      _arg = -(_arg ?? 0);
     }
-    String argStr = _arg.toDouble().toString();
-    Match m1 = _numberRx.firstMatch(argStr);
+    String argStr = "${(_arg ?? 0)}";
+    Match? m1 = _numberRx.firstMatch(argStr);
     if (m1 != null) {
-      String intPart = m1.group(1);
-      String fraction = m1.group(2);
+      String intPart = m1.group(1) ?? "";
+      String fraction = m1.group(2) ?? "";
       /*
        * Cases:
        * 1.2345    = 1.2345e0  -> [12345]    e+0 d1  l5
@@ -37,9 +40,9 @@ class FloatFormatter extends Formatter {
       _digits.addAll(fraction.split('').map(int.parse));
       if (intPart.length == 1) {
         if (intPart == '0') {
-          Match leadingZeroesMatch = _leadingZeroesRx.firstMatch(fraction);
+          Match? leadingZeroesMatch = _leadingZeroesRx.firstMatch(fraction);
           if (leadingZeroesMatch != null) {
-            int zeroesCount = leadingZeroesMatch.group(1).length;
+            int zeroesCount = leadingZeroesMatch.group(1)?.length ?? 0;
             _exponent = zeroesCount > 0 ? -(zeroesCount + 1) : zeroesCount - 1;
           } else {
             _exponent = 0;
@@ -52,11 +55,11 @@ class FloatFormatter extends Formatter {
         _exponent = intPart.length - 1;
       }
     } else {
-      Match m2 = _expoRx.firstMatch(argStr);
+      Match? m2 = _expoRx.firstMatch(argStr);
       if (m2 != null) {
-        String intPart = m2.group(1);
-        String fraction = m2.group(2);
-        _exponent = int.parse(m2.group(3));
+        String intPart = m2.group(1) ?? "";
+        String fraction = m2.group(2) ?? "";
+        _exponent = m2.group(3).toInt;
 
         if (_exponent > 0) {
           int diff = _exponent - fraction.length + 1;
@@ -82,19 +85,19 @@ class FloatFormatter extends Formatter {
       return ret;
     }
     if (_output != null) {
-      return _output;
+      return _output ?? "";
     }
-    if (options['add_space'] && options['sign'] == '' && _arg >= 0) {
+    if (options['add_space'] && options['sign'] == '' && (_arg ?? 0) >= 0) {
       options['sign'] = ' ';
     }
-    if (_arg.isInfinite) {
-      if (_arg.isNegative) {
+    if ((_arg ?? 0).isInfinite) {
+      if ((_arg ?? 0).isNegative) {
         options['sign'] = '-';
       }
       ret = 'inf';
       options['padding_char'] = ' ';
     }
-    if (_arg.isNaN) {
+    if ((_arg ?? 0).isNaN) {
       ret = 'nan';
       options['padding_char'] = ' ';
     }
@@ -118,7 +121,7 @@ class FloatFormatter extends Formatter {
         if (-4 <= _exp && _exp < options['precision']) {
           sigDigs -= _decimal;
           num precision = max(options['precision'] - 1 - _exp, sigDigs);
-          ret = asFixed(precision, removeTrailingZeros: !options['alternate_form']);
+          ret = asFixed(precision.toNumInt, removeTrailingZeros: !options['alternate_form']);
         } else {
           ret = asExponential(options['precision'] - 1, removeTrailingZeros: !options['alternate_form']);
         }

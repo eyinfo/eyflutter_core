@@ -9,14 +9,14 @@ class SharedPreferencesUtils {
   /// 向本地sp文件中添加数据
   /// [key] 存储key
   /// [value] 存储数据,仅支持String、int、double类型
-  static void put({String key, dynamic value}) {
+  static void put({String? key, dynamic value}) {
     if (key.isEmptyString || !_isMatchType(value)) {
       return;
     }
     CloudChannelManager.instance.send(_sharedPreferencesAction, arguments: {"key": key, "type": "set", "value": value});
   }
 
-  static Future<T> _get<T>({String key, String getType}) {
+  static Future<T?> _get<T>({String? key, String? getType}) {
     if (key.isEmptyString) {
       return Future.value();
     }
@@ -24,23 +24,23 @@ class SharedPreferencesUtils {
         .send<T>(_sharedPreferencesAction, arguments: {"key": key, "type": "get", "getType": getType});
   }
 
-  static Future<String> getString({String key}) {
+  static Future<String?> getString({String? key}) {
     return _get<String>(key: key, getType: "string");
   }
 
-  static Future<bool> getBool({String key}) {
+  static Future<bool?> getBool({String? key}) {
     return _get<bool>(key: key, getType: "bool");
   }
 
-  static Future<int> getInt({String key}) {
+  static Future<int?> getInt({String? key}) {
     return _get<int>(key: key, getType: "int");
   }
 
-  static Future<double> getDouble({String key}) {
+  static Future<double?> getDouble({String? key}) {
     return _get<double>(key: key, getType: "double");
   }
 
-  static void clear({String key}) {
+  static void clear({String? key}) {
     if (key.isEmptyString) {
       return;
     }

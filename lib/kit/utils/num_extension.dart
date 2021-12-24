@@ -1,4 +1,4 @@
-extension NumUtilsExtension on num {
+extension NumUtilsExtension on num? {
   /// 判断字符标识是否true(eg. true or 1)
   bool get isNumTrue {
     if (this == null) {
@@ -30,7 +30,7 @@ extension NumUtilsExtension on num {
       if (this is double) {
         return this as double;
       } else {
-        return double.tryParse("$this");
+        return double.tryParse("$this") ?? 0;
       }
     } catch (e) {
       return 0;
@@ -44,9 +44,9 @@ extension NumUtilsExtension on num {
     }
     try {
       if (this is num) {
-        return this ~/ 1;
+        return (this ?? 0) ~/ 1;
       } else {
-        return num.tryParse("$this") ~/ 1;
+        return (num.tryParse("$this") ?? 0) ~/ 1;
       }
     } catch (e) {
       return 0;
@@ -61,7 +61,7 @@ extension NumUtilsExtension on num {
     if (this == null) {
       return -reduction;
     }
-    return this - reduction;
+    return this ?? 0 - reduction;
   }
 
   /// 加数
@@ -69,6 +69,6 @@ extension NumUtilsExtension on num {
     if (this == null) {
       return number;
     }
-    return this + number;
+    return this ?? 0 + number;
   }
 }

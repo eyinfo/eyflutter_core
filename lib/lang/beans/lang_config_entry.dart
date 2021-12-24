@@ -2,7 +2,7 @@ import 'package:eyflutter_core/eyflutter_core.dart';
 
 /// Author lijinghuan
 /// Email:ljh0576123@163.com
-/// CreateTime:2021-12-21
+/// CreateTime:2021-12-24
 /// Description:Generated file. Do not edit.
 /// Modifier:
 /// ModifyContent:
@@ -20,7 +20,7 @@ class LangConfigEntry {
   /// 语言包标识
   String unique;
 
-  LangConfigEntry({this.langCode = '',this.countryCode = '',this.isDefault,this.unique = '', Map<String, dynamic> json});
+  LangConfigEntry({this.langCode = '',this.countryCode = '',this.isDefault = false,this.unique = '', Map<String, dynamic>? json});
 
   factory LangConfigEntry.fromJson(Map<String,dynamic> json) => _$LangConfigEntryFromJson(json);
 

@@ -9,27 +9,21 @@ class LangStorage {
   factory LangStorage() => _getInstance();
 
   static LangStorage get instance => _getInstance();
-  static LangStorage _instance;
+  static LangStorage? _instance;
 
   LangStorage._internal();
 
   static LangStorage _getInstance() {
-    if (_instance == null) {
-      _instance = new LangStorage._internal();
-    }
-    return _instance;
+    return _instance ??= new LangStorage._internal();
   }
 
   String _currLangCacheKey = "13e476583b25fe72";
 
   /// 缓存当前语言
-  void cacheCurrentLang(Locale locale) async {
-    if (locale == null) {
-      return;
-    }
+  void cacheCurrentLang(Locale? locale) async {
     Map<String, String> map = {};
-    map["code"] = locale.languageCode;
-    map["country_code"] = locale.countryCode;
+    map["code"] = locale?.languageCode ?? "";
+    map["country_code"] = locale?.countryCode ?? "";
     String langJson = JsonUtils.toJson(map);
     KeepManager.instance.perform(
         params: langJson,
@@ -59,7 +53,7 @@ class LangStorage {
   }
 
   /// 获取当前语言
-  Locale getCurrentLangCode() {
+  Locale? getCurrentLangCode() {
     var langJson = MemoryUtils.instance.getString(_currLangCacheKey);
     if (langJson.isEmptyString) {
       return null;

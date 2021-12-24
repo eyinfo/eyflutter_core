@@ -1,23 +1,23 @@
 import 'package:eyflutter_core/kit/sprintf/sprintf_impl.dart';
 import 'package:eyflutter_core/kit/utils/set/list_extention.dart';
 
-extension StringUtilsExtension on String {
+extension StringUtilsExtension on String? {
   bool get isEmptyString {
-    return this == null || this.isEmpty;
+    return this?.isEmpty ?? true;
   }
 
   bool get isNotEmptyString {
-    return this != null && this.isNotEmpty;
+    return this?.isNotEmpty ?? false;
   }
 
   ///字符串是否包含特定字符
   ///[params]待比较字符数组
   bool isContainsSub(List<String> params) {
-    if (this == null || this.isEmpty || params == null || this.isEmpty) {
+    if (this.isEmptyString || params.isEmptyList) {
       return false;
     }
     for (var param in params) {
-      if (this.contains(param)) {
+      if (this?.contains(param) ?? false) {
         return true;
       }
     }
@@ -27,11 +27,11 @@ extension StringUtilsExtension on String {
   ///字符串开始是否包含特定字符
   ///[params]待比较字符
   bool isContainsStartsWith(List<String> params) {
-    if (this == null || this.isEmpty || params == null || params.isEmpty) {
+    if (this.isEmptyString || params.isEmptyList) {
       return false;
     }
     for (var param in params) {
-      if (this.startsWith(param)) {
+      if (this?.startsWith(param) ?? false) {
         return true;
       }
     }
@@ -48,13 +48,13 @@ extension StringUtilsExtension on String {
   }
 
   ///截断字符
-  ///[text]处理文体
+  ///text处理文体
   ///[length]最大长度(以字符计)
   ///[endChars]末尾显示字符
   ///[isAccurate]是否精确统计
   String ellipsize(int length, String endChars, bool isAccurate) {
-    String text = this?.trim();
-    int len = text?.length;
+    String text = this?.trim() ?? "";
+    int len = text.length;
     int count = 0;
     StringBuffer builder = new StringBuffer();
     for (int i = 0; i < len; i++) {
@@ -81,9 +81,9 @@ extension StringUtilsExtension on String {
     if (this.isEmptyString) {
       return '';
     }
-    int startIndex = this.indexOf(start);
-    int endIndex = this.indexOf(end, startIndex + start.length);
-    return this.substring(startIndex + start.length, endIndex);
+    int startIndex = this?.indexOf(start) ?? 0;
+    int endIndex = this?.indexOf(end, startIndex + start.length) ?? 0;
+    return this?.substring(startIndex + start.length, endIndex) ?? "";
   }
 
   // 格式化字符串
@@ -92,10 +92,10 @@ extension StringUtilsExtension on String {
       return '';
     }
     if (args.isEmptyList) {
-      return this;
+      return this ?? "";
     }
     var printFormat = new PrintFormat();
-    return printFormat(this, args);
+    return printFormat(this ?? "", args);
   }
 
   /// 返回排除后缀名称
@@ -103,11 +103,11 @@ extension StringUtilsExtension on String {
     if (this == null) {
       return "";
     }
-    int endIndex = this.lastIndexOf(".");
+    int endIndex = this?.lastIndexOf(".") ?? 0;
     if (endIndex < 0) {
-      return this;
+      return this ?? "";
     }
-    return this.substring(0, endIndex);
+    return this?.substring(0, endIndex) ?? "";
   }
 
   /// 验证是否email格式
@@ -116,15 +116,26 @@ extension StringUtilsExtension on String {
     if (this.isEmptyString) {
       return false;
     }
-    return RegExp(regex).hasMatch(this);
+    return RegExp(regex).hasMatch(this ?? "");
   }
 
   double get toNumDouble {
-    if (this == null) {
+    if (this.isEmptyString) {
       return 0;
     }
     try {
-      return double.tryParse("$this");
+      return double.tryParse("$this") ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  int get toInt {
+    if (this.isEmptyString) {
+      return 0;
+    }
+    try {
+      return int.tryParse("$this") ?? 0;
     } catch (e) {
       return 0;
     }
@@ -133,9 +144,9 @@ extension StringUtilsExtension on String {
   /// 转成当地时间
   DateTime toLocalTime() {
     if (this.isEmptyString) {
-      return null;
+      return DateTime.now();
     }
-    DateTime time = DateTime.parse(this).toLocal();
+    DateTime time = DateTime.parse(this ?? "").toLocal();
     return time;
   }
 }

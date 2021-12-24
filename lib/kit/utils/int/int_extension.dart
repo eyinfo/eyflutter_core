@@ -1,15 +1,15 @@
 import "package:intl/intl.dart";
 
-extension IntUtilsExtension on int {
+extension IntUtilsExtension on int? {
   /// 是否为空或0
   bool get isNullOrZero => this == null || this == 0;
 
   /// 减数
   int reduce(int reduction) {
-    if (this == null) {
+    if (this.isNullOrZero) {
       return -reduction;
     }
-    return this - reduction;
+    return this ?? 0 - reduction;
   }
 
   /// 加数
@@ -17,17 +17,17 @@ extension IntUtilsExtension on int {
     if (this == null) {
       return number;
     }
-    return this + number;
+    return this ?? 0 + number;
   }
 
   /// 转成当地时间
   DateTime toLocalTime({bool isutc = false}) {
     if (this.isNullOrZero) {
-      return null;
+      return DateTime.now();
     }
-    int mstime = this;
+    int mstime = this ?? 0;
     if ("$this".length == 10) {
-      mstime = this * 1000;
+      mstime = this ?? 0 * 1000;
     }
     DateTime time = DateTime.fromMillisecondsSinceEpoch(mstime, isUtc: isutc).toLocal();
     return time;

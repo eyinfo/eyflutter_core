@@ -1,8 +1,7 @@
 import 'package:eyflutter_core/kit/utils/set/list_extention.dart';
 
-extension MapUtilsMapKeyExtension<M, T> on Map<M, T> {
+extension MapUtilsMapKeyExtension<M, T> on Map<M, T>? {
   /// 移除map中对应key的数据
-  /// [map] map object
   /// [keys] map keys
   void removeKeys(List<M> keys) {
     if (this.isEmptyMap() || keys.isEmptyList) {
@@ -10,18 +9,18 @@ extension MapUtilsMapKeyExtension<M, T> on Map<M, T> {
     }
     keys.forEach((key) {
       //remove key or value
-      this.remove(key);
+      this?.remove(key);
     });
   }
 
   /// 添加元素到map中
   /// [key]元素key
   /// [value]元素value
-  Map<M, T> addItem(M key, T value) {
+  Map<M, T>? addItem(M key, T value) {
     if (key == null || value == null) {
       return this;
     }
-    this[key] = value;
+    this?[key] = value;
     return this;
   }
 
@@ -43,17 +42,22 @@ extension MapUtilsMapKeyExtension<M, T> on Map<M, T> {
   /// 获取map value
   /// [key]map->key
   /// [defaultValue]不在存在时返回默认值
-  T getValue<T>(M key, [T defaultValue]) {
-    if (this.isEmptyMap() || !this.containsKey(key)) {
+  T? getValue<T>(M key, [T? defaultValue]) {
+    if (this.isEmptyMap() || !(this?.containsKey(key) ?? false)) {
       return defaultValue;
     }
-    return this[key] == null ? defaultValue : this[key];
+    Object? obj = this?[key];
+    if (obj is! T) {
+      return defaultValue;
+    }
+    T result = this?[key] as T;
+    return result ?? defaultValue;
   }
 
   /// 判断是否空map
-  /// [map]key-value
+  /// key-value
   bool isEmptyMap() {
-    return this == null || this.isEmpty;
+    return this?.isEmpty ?? true;
   }
 
   /// 判断map为非空

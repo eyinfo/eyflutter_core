@@ -35,11 +35,11 @@ class PrintFormat {
       throw new ArgumentError('Expecting list as second argument');
     }
     for (Match m in specifier.allMatches(fmt)) {
-      String _parameter = m[1];
-      String _flags = m[2];
-      String _width = m[3];
-      String _precision = m[4];
-      String _type = m[5];
+      String? _parameter = m[1];
+      String? _flags = m[2];
+      String? _width = m[3];
+      String? _precision = m[4];
+      String? _type = m[5];
 
       String _argStr = '';
       Map _options = {
@@ -51,7 +51,7 @@ class PrintFormat {
         'sign': '',
         'specifier_type': _type,
       };
-      _parseFlags(_flags).forEach((var K, var V) {
+      _parseFlags(_flags ?? "").forEach((var K, var V) {
         _options[K] = V;
       });
       // The argument we want to deal with
@@ -68,16 +68,17 @@ class PrintFormat {
       if (_arg == null && _type != '%') {
         _arg = args[argOffset++];
       }
-      _options['is_upper'] = uppercaseRx.hasMatch(_type);
+      _options['is_upper'] = uppercaseRx.hasMatch(_type ?? "");
       if (_type == '%') {
-        if (_flags.length > 0 || _width != null || _precision != null) {
+        if ((_flags?.length ?? 0) > 0 || _width != null || _precision != null) {
           throw new Exception('"%" does not take any flags');
         }
         _argStr = '%';
       } else if (this._formatMap.containsKey(_type)) {
-        _argStr = _formatMap[_type](_arg, _options).asString();
-      } else {
-        throw new ArgumentError("Unknown format type $_type");
+        var formatEntry = _formatMap[_type ?? ""];
+        if (formatEntry != null) {
+          _argStr = formatEntry(_arg, _options).asString();
+        }
       }
       // Add the pre-format string to the return
       ret += fmt.substring(offset, m.start);

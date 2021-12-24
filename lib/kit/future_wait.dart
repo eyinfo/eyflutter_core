@@ -4,11 +4,10 @@ typedef OnFutureWaitCall = void Function(bool success, List<dynamic> resultList)
 
 /// 同步任务，确保所有任务执行完后回调结果
 class FutureWait {
-
   List<Future<dynamic>> _task = [];
 
   /// 添加Future任务
-  FutureWait addFuture<T>(Future<T> futureTask) {
+  FutureWait addFuture<T>(Future<T>? futureTask) {
     if (futureTask == null) {
       return this;
     }
@@ -17,7 +16,7 @@ class FutureWait {
   }
 
   /// 添加Future任务
-  FutureWait addActionFuture<T>(OnFutureAction action) {
+  FutureWait addActionFuture<T>(OnFutureAction? action) {
     if (action == null) {
       return this;
     }
@@ -26,7 +25,7 @@ class FutureWait {
   }
 
   /// 执行任务
-  void perform({OnFutureWaitCall call}) {
+  void perform({OnFutureWaitCall? call}) {
     Future.wait(_task, cleanUp: (successValue) {
       if (call != null) {
         call(false, []);

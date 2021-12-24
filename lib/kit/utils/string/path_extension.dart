@@ -8,7 +8,7 @@ extension PathUtilsExtension on String {
     if (this.isEmptyString) {
       return "";
     }
-    var extension = p.extension(this) ?? "";
+    var extension = p.extension(this);
     var index = extension.indexOf("?");
     if (index >= 0) {
       extension = extension.substring(0, index);
@@ -22,7 +22,7 @@ extension PathUtilsExtension on String {
       return "";
     }
     var basename = p.basename(this);
-    return basename ?? "";
+    return basename;
   }
 
   /// 包含前后斜线(输入示例:/path0/path1)
@@ -59,7 +59,7 @@ extension PathUtilsExtension on String {
   }
 
   /// 追加参数
-  String appendParams({String key, String value}) {
+  String appendParams({required String key, required String value}) {
     if (key.isEmptyString) {
       return this;
     }

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 
-extension JsonUtilsExtension on String {
+extension JsonUtilsExtension on String? {
   /// json中是否包含指定的键
   /// [keyName]键名称
   bool containerKey(String keyName) {
@@ -14,7 +14,7 @@ extension JsonUtilsExtension on String {
       return false;
     }
     String regex = "(((\"" + keyName + "\")|('" + keyName + "')):(.*?)((\\,|\\})(\\s\\S)*))";
-    var hasMatch = new RegExp(regex).hasMatch(this);
+    var hasMatch = new RegExp(regex).hasMatch(this ?? "");
     return hasMatch;
   }
 
@@ -24,7 +24,7 @@ extension JsonUtilsExtension on String {
       return new HashMap<String, dynamic>();
     }
     try {
-      return json.decode(this);
+      return json.decode(this ?? "");
     } catch (e) {
       return new HashMap<String, dynamic>();
     }
@@ -36,7 +36,7 @@ extension JsonUtilsExtension on String {
       return true;
     }
     //这里用this.replaceAll('\\r|\\n|\\s|\\t','')可能会失败
-    String json = this;
+    String json = this ?? "";
     ['\r', '\n', '\t', '\s', '\S'].forEach((element) {
       json = json.replaceAll(element, "");
     });

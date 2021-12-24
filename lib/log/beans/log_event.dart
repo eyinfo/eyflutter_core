@@ -11,13 +11,13 @@ class LogEvent<E> {
   final String tag;
 
   /// 堆栈信息(在日志调用时传入)
-  final StackTrace stackTrace;
+  final StackTrace? stackTrace;
 
   /// 异常日志
-  final E exception;
+  final E? exception;
 
   /// 日志记录时间
-  final DateTime dateTime;
+  final DateTime? dateTime;
 
   /// 对[Level.fatal]或[Level.wtf]日志，errorMarkedMessage消息区别于其它内容显示;
   final dynamic errorMarkedMessage;

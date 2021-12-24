@@ -18,7 +18,7 @@ class ProviderListModel<T> extends ChangeNotifier {
 
   /// 将item从集合中移除
   /// item 要移除的数据
-  void removeItem({@required T item}) {
+  void removeItem({required T item}) {
     if (item == null || _items.length == 0) {
       return;
     }
@@ -26,7 +26,7 @@ class ProviderListModel<T> extends ChangeNotifier {
   }
 
   void updateAt(int index, T item) {
-    if (item == null || index == null || index < 0 || (index + 1) >= _items.length) {
+    if (item == null || index < 0 || (index + 1) >= _items.length) {
       return;
     }
     _items[index] = item;
@@ -35,9 +35,9 @@ class ProviderListModel<T> extends ChangeNotifier {
   /// 将item添加到集合中
   /// [items] 数据集合
   /// [isClear] 添加数据至集合前是否需要清空
-  void addAll({@required List<T> items, bool isClear = false}) {
+  void addAll({required List<T> items, bool isClear = false}) {
     if (items.isNotEmptyList) {
-      if (isClear ?? false) {
+      if (isClear) {
         _items.clear();
       }
       _items.addAll(items);
@@ -48,7 +48,7 @@ class ProviderListModel<T> extends ChangeNotifier {
 
   /// 将item添加到集合中
   /// [item] 数据模型
-  void add({@required T item}) {
+  void add({required T item}) {
     if (item != null) {
       _items.add(item);
       //通知监听器，构建InheritedProvider，更新状态。
@@ -59,7 +59,7 @@ class ProviderListModel<T> extends ChangeNotifier {
   /// 插件数据至集合中
   /// [item] 数据模型
   /// [index] 插入数据至集合中指定位置的索引,null或大于items.length将添加至集合末尾。
-  void insert({@required T item, int index}) {
+  void insert({required T item, int? index}) {
     if (item != null) {
       var len = _items.length;
       var idx = (index == null || (index + 1) >= len) ? len : index;

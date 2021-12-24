@@ -1,0 +1,12 @@
+{
+  "code": {
+    "define_type": "int",
+    "default_value": 0,
+    "describe": "api状态返回码"
+  },
+  "msg": {
+    "define_type": "String",
+    "default_value": "",
+    "describe": "message"
+  }
+}

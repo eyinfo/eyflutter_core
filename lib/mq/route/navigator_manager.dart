@@ -7,21 +7,18 @@ class NavigatorManager {
   factory NavigatorManager() => _getInstance();
 
   static NavigatorManager get instance => _getInstance();
-  static NavigatorManager _instance;
+  static NavigatorManager? _instance;
 
   NavigatorManager._internal();
 
   static NavigatorManager _getInstance() {
-    if (_instance == null) {
-      _instance = new NavigatorManager._internal();
-    }
-    return _instance;
+    return _instance ??= new NavigatorManager._internal();
   }
 
   /// 获取路由参数(一般配合NavigatorManager.go一起使用)
   /// [context]页面或控件视图的上下文
   Map<String, String> getRouteParams(BuildContext context) {
-    var arguments = ModalRoute.of(context)?.settings?.arguments;
+    var arguments = ModalRoute.of(context)?.settings.arguments;
     if (arguments is Map<String, String>) {
       return arguments;
     }
@@ -33,7 +30,7 @@ class NavigatorManager {
   /// [route]路由及参数地址,通过[CSRouterUrlParse]解析后查找[CSRouter.pageRoutes()]再跳转;
   /// [defaultRoute]默认路由,在route解析失败或未搭到对应的路由时渲染当前页面
   /// [initParams]初始化参数
-  MaterialPageRoute go({String route = "/", WidgetBuilder defaultRoute, Map<String, dynamic> initParams}) {
+  MaterialPageRoute go({String route = "/", required WidgetBuilder defaultRoute, Map<String, dynamic>? initParams}) {
     WidgetBuilder builder;
     String _routeName;
     if (initParams == null) {

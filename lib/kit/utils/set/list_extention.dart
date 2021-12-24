@@ -1,7 +1,7 @@
-extension ListUtilsExtension<T> on List<T> {
+extension ListUtilsExtension<T> on List<T>? {
   /// 判断list是否为空
   bool get isEmptyList {
-    return this == null || this.isEmpty;
+    return this?.isEmpty ?? true;
   }
 
   bool get isNotEmptyList {
@@ -13,12 +13,12 @@ extension ListUtilsExtension<T> on List<T> {
     if (this.isEmptyList) {
       return true;
     }
-    return this.contains("") || this.contains(null);
+    return this?.contains("") ?? true;
   }
 
   List<T> get copy {
     List<T> copyList = [];
-    this.forEach((T element) {
+    this?.forEach((T element) {
       copyList.add(element);
     });
     return copyList;

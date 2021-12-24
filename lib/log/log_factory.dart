@@ -15,39 +15,42 @@ import 'package:eyflutter_core/log/logger_parameter.dart';
 class LogFactory implements ILogger {
   LogFactory({this.parameter, this.logPrinter, this.logOutput});
 
-  final LoggerParameter parameter;
-  final ILogPrinter logPrinter;
-  final ILogOutput logOutput;
+  final LoggerParameter? parameter;
+  final ILogPrinter? logPrinter;
+  final ILogOutput? logOutput;
 
-  ListQueue<LogFunctionNested> queue = new Queue<LogFunctionNested>();
+  ListQueue<LogFunctionNested> queue = new ListQueue<LogFunctionNested>();
   bool isPrinting = false;
 
   @override
   void printLog<E>(Level level, dynamic message,
-      {String tag, StackTrace stackTrace, E exception, dynamic errorMarkedMessage}) {
+      {String? tag, StackTrace? stackTrace, E? exception, dynamic errorMarkedMessage}) {
     try {
-      assert(message != null && logPrinter != null);
+      assert(message != null);
       if (errorMarkedMessage != null && errorMarkedMessage is StackTrace) {
         throw ArgumentError('errorMarkedMessage parameter cannot take a StackTrace!');
       }
-      if (parameter.logFilter == null) {
-        parameter.setLogFilter(LogFilter());
+      if (parameter?.logFilter == null) {
+        parameter?.setLogFilter(LogFilter());
       }
       var logEvent = new LogEvent(level, message,
-          tag: tag,
+          tag: tag ?? "",
           stackTrace: stackTrace,
           exception: exception,
           dateTime: DateTime.now(),
           errorMarkedMessage: errorMarkedMessage);
       //过滤掉不需要打印日志
-      if (!parameter.logFilter.filterLog(logEvent)) {
+      if (!(parameter?.logFilter?.filterLog(logEvent) ?? false)) {
         return;
       }
-      parameter.logListener?.onLogListener(Future.value(logEvent));
-      if (parameter.isPrintLog ?? true) {
-        queue.addFirst(logPrinter.log(logEvent));
-        if (!isPrinting) {
-          _performLog();
+      parameter?.logListener?.onLogListener(Future.value(logEvent));
+      if (parameter?.isPrintLog ?? false) {
+        var nested = logPrinter?.log(logEvent);
+        if (nested != null) {
+          queue.addFirst(nested);
+          if (!isPrinting) {
+            _performLog();
+          }
         }
       }
     } catch (e) {
@@ -62,8 +65,8 @@ class LogFactory implements ILogger {
     }
     isPrinting = true;
     LogFunctionNested removeLast = queue.removeLast();
-    Future<LogResponse> responseCall = removeLast?.perform();
-    responseCall?.then((response) {
+    Future<LogResponse> responseCall = removeLast.perform();
+    responseCall.then((response) {
       var level = response.level;
       var lines = response.logFuture;
       logOutput?.output(LogOutEvent(level: level, lines: lines));

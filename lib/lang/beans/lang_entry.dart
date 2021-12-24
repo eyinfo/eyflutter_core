@@ -5,5 +5,5 @@ class LangEntry {
   /// 国家编码
   final String countryCode;
 
-  LangEntry({this.langCode, this.countryCode});
+  LangEntry({this.langCode = "", this.countryCode = ""});
 }

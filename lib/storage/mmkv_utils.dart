@@ -14,13 +14,10 @@ class MmkvUtils {
   factory MmkvUtils() => _getInstance();
 
   static MmkvUtils get instance => _getInstance();
-  static MmkvUtils _instance;
+  static MmkvUtils? _instance;
 
   static MmkvUtils _getInstance() {
-    if (_instance == null) {
-      _instance = new MmkvUtils._internal();
-    }
-    return _instance;
+    return _instance ??= new MmkvUtils._internal();
   }
 
   MmkvUtils._internal();
@@ -33,7 +30,7 @@ class MmkvUtils {
   String _ordinaryWithId = "c694f6da00968d67";
   String _stateWithId = "fa7463fbf7bc5a65";
 
-  Future<T> _cacheData<T>(String key, dynamic value, String type, MMkvPart part) {
+  Future<T?> _cacheData<T>(String key, dynamic value, String type, MMkvPart part) {
     var withId = "";
     if (part == MMkvPart.user) {
       withId = _userWithId;
@@ -50,7 +47,7 @@ class MmkvUtils {
     });
   }
 
-  Future<T> _takeData<T>(String key, String type, MMkvPart part) {
+  Future<T?> _takeData<T>(String key, String type, MMkvPart part) {
     var withId = "";
     if (part == MMkvPart.user) {
       withId = _userWithId;
@@ -70,9 +67,9 @@ class MmkvUtils {
   /// [key] 存储key
   /// [value] int value
   /// [part] 缓存区类型
-  Future<int> putInt(String key, {int value = 0, MMkvPart part = MMkvPart.normal}) {
+  Future<int?> putInt(String key, {int value = 0, MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
-      return Future.value();
+      return Future.value(0);
     }
     return _cacheData<int>(key, value, "int", part);
   }
@@ -81,9 +78,9 @@ class MmkvUtils {
   /// [key] 存储key
   /// [value] double value
   /// [part] 缓存区类型
-  Future<double> putDouble(String key, {double value = 0.0, MMkvPart part = MMkvPart.normal}) {
+  Future<double?> putDouble(String key, {double value = 0.0, MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
-      return Future.value();
+      return Future.value(0);
     }
     return _cacheData<double>(key, value, "double", part);
   }
@@ -92,9 +89,9 @@ class MmkvUtils {
   /// [key] 存储key
   /// [value] string value
   /// [part] 缓存区类型
-  Future<String> putString(String key, {String value = "", MMkvPart part = MMkvPart.normal}) {
+  Future<String?> putString(String key, {String value = "", MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
-      return Future.value();
+      return Future.value("");
     }
     return _cacheData<String>(key, value, "string", part);
   }
@@ -103,9 +100,9 @@ class MmkvUtils {
   /// [key] 存储key
   /// [value] bool value
   /// [part] 缓存区类型
-  Future<bool> putBool(String key, {bool value = false, MMkvPart part = MMkvPart.normal}) {
+  Future<bool?> putBool(String key, {bool value = false, MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
-      return Future.value();
+      return Future.value(false);
     }
     return _cacheData<bool>(key, value, "bool", part);
   }
@@ -113,7 +110,7 @@ class MmkvUtils {
   /// 获取int值
   /// [key] 存储key
   /// [part] 缓存区类型
-  Future<int> getInt(String key, {MMkvPart part = MMkvPart.normal}) {
+  Future<int?> getInt(String key, {MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
       return Future.value(0);
     }
@@ -123,7 +120,7 @@ class MmkvUtils {
   /// 获取double值
   /// [key] 存储key
   /// [part] 缓存区类型
-  Future<double> getDouble(String key, {MMkvPart part = MMkvPart.normal}) {
+  Future<double?> getDouble(String key, {MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
       return Future.value(0.0);
     }
@@ -133,7 +130,7 @@ class MmkvUtils {
   /// 获取bool值
   /// [key] 存储key
   /// [part] 缓存区类型
-  Future<bool> getBool(String key, {MMkvPart part = MMkvPart.normal}) {
+  Future<bool?> getBool(String key, {MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
       return Future.value(false);
     }
@@ -143,7 +140,7 @@ class MmkvUtils {
   /// 获取string值
   /// [key] 存储key
   /// [part] 缓存区类型
-  Future<String> getString(String key, {MMkvPart part = MMkvPart.normal}) {
+  Future<String?> getString(String key, {MMkvPart part = MMkvPart.normal}) {
     if (key.isEmptyString) {
       return Future.value("");
     }
