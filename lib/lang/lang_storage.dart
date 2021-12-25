@@ -1,5 +1,6 @@
 import 'package:eyflutter_core/kit/parts/keep_manager.dart';
 import 'package:eyflutter_core/kit/utils/json_utils.dart';
+import 'package:eyflutter_core/kit/utils/object_utils.dart';
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 import 'package:eyflutter_core/storage/memory_utils.dart';
 import 'package:eyflutter_core/storage/mmkv_utils.dart';

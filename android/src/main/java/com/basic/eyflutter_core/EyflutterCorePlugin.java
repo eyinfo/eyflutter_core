@@ -15,6 +15,7 @@ import com.basic.eyflutter_core.subscribe.MMKVDeleteSubscribe;
 import com.basic.eyflutter_core.subscribe.MMKVReceiveSubscribe;
 import com.basic.eyflutter_core.subscribe.MMKVTakeSubscribe;
 import com.basic.eyflutter_core.subscribe.NetConnectSubscribe;
+import com.basic.eyflutter_core.subscribe.NetRequestSubscribe;
 import com.basic.eyflutter_core.subscribe.PreferenceReceiveSubscribe;
 import com.basic.eyflutter_core.utils.MmkvUtils;
 import com.cloud.eyutils.CdLibConfig;
@@ -31,6 +32,8 @@ public class EyflutterCorePlugin implements FlutterPlugin {
         if (LauncherState.getApplicationContext() == null) {
             LauncherState.setApplicationContext(applicationContext);
         }
+        MmkvUtils.getInstance(applicationContext);
+        initDb(applicationContext);
         ChannelPlugin.getInstance().register(binding.getBinaryMessenger(), ChannelMode.method);
         ChannelPlugin.getInstance().putSubscribe(ChannelConstants.networkConnectChannelName, new NetConnectSubscribe());
         ChannelPlugin.getInstance().putSubscribe(ChannelConstants.storageMethodName, new DataReceiveSubscribe());
@@ -40,8 +43,7 @@ public class EyflutterCorePlugin implements FlutterPlugin {
         ChannelPlugin.getInstance().putSubscribe(ChannelConstants.mmkvDeleteMethodName, new MMKVDeleteSubscribe());
         ChannelPlugin.getInstance().putSubscribe(ChannelConstants.cacheSizeMethodName, new GetCacheSubscribe());
         ChannelPlugin.getInstance().putSubscribe(ChannelConstants.cleanCacheMethodName, new CleanCacheSubscribe());
-        MmkvUtils.getInstance(applicationContext);
-        initDb(applicationContext);
+        ChannelPlugin.getInstance().putSubscribe(ChannelConstants.netRequestMethodName, new NetRequestSubscribe());
     }
 
     private void initDb(Context applicationContext) {
@@ -64,6 +66,7 @@ public class EyflutterCorePlugin implements FlutterPlugin {
         ChannelPlugin.getInstance().removeSubScribe(ChannelConstants.mmkvDeleteMethodName);
         ChannelPlugin.getInstance().removeSubScribe(ChannelConstants.cacheSizeMethodName);
         ChannelPlugin.getInstance().removeSubScribe(ChannelConstants.cleanCacheMethodName);
+        ChannelPlugin.getInstance().removeSubScribe(ChannelConstants.netRequestMethodName);
         ChannelPlugin.getInstance().destroy();
     }
 }

@@ -8,6 +8,6 @@ import 'dart:core';
 class ConsoleOutput implements ILogOutput {
   @override
   void output(LogOutEvent logOutEvent) {
-    logOutEvent?.lines?.forEach(print);
+    logOutEvent.lines.forEach(print);
   }
 }

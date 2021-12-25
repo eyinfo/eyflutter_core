@@ -2,7 +2,7 @@
 mixin OnRequestInterceptor {
   /// 基础地址
   /// [hostType] 主机类型(根据hostType配置基础地址)
-  String baseUrl({int hostType});
+  String baseUrl({int hostType = 0});
 
   /// 响应成功返回状态码值
   int successCode() {

@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:eyflutter_core/kit/utils/dynamic_utils.dart';
 import 'package:eyflutter_core/kit/utils/map/map_extension.dart';
+import 'package:eyflutter_core/kit/utils/dynamic_utils.dart';
 import 'package:eyflutter_core/kit/utils/string/string_extension.dart';
 import 'package:flutter/material.dart';
 

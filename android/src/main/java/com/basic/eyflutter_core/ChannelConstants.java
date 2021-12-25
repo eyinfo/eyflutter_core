@@ -31,4 +31,8 @@ public interface ChannelConstants {
      * 数据库路径配置模型
      */
     String databasePathModelKey = "367e47288880453e88597f539e90334a";
+
+    //网络请求action
+    String netRequestMethodName = "e004dc5b1e384739";
+    String netRequestCompleteMethodName = "812454d85242c263";
 }

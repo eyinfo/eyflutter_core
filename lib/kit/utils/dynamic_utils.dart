@@ -43,4 +43,12 @@ extension DynamicUtilsDynamicExtension on dynamic {
     }
     return false;
   }
+
+  /// dynamic类型转string
+  String get string {
+    if (this is! String) {
+      return "";
+    }
+    return (this as String).trim();
+  }
 }
