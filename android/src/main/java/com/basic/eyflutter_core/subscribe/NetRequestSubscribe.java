@@ -21,12 +21,14 @@ import com.cloud.eyutils.events.Action1;
 import com.cloud.eyutils.events.RunnableParamsN;
 import com.cloud.eyutils.utils.ConvertUtils;
 import com.cloud.eyutils.utils.JsonUtils;
+import com.cloud.eyutils.utils.ObjectJudge;
 
 import java.util.HashMap;
 import java.util.TreeMap;
 
 import io.flutter.plugin.common.MethodChannel;
 
+@SuppressWarnings("unchecked")
 public class NetRequestSubscribe extends OnDistributionSubscribe {
 
     private MethodChannel.Result result;
@@ -41,13 +43,13 @@ public class NetRequestSubscribe extends OnDistributionSubscribe {
         HashMap<String, Object> data = (HashMap<String, Object>) arguments.get("data");
         HashMap<String, String> headers = (HashMap<String, String>) arguments.get("headers");
         if (TextUtils.equals(method, "GET")) {
-            request(requestId, url, contentType, RequestType.GET, data);
+            request(requestId, url, contentType, RequestType.GET, headers, data);
         } else if (TextUtils.equals(method, "PUT")) {
-            request(requestId, url, contentType, RequestType.PUT, data);
+            request(requestId, url, contentType, RequestType.PUT, headers, data);
         } else if (TextUtils.equals(method, "POST")) {
-            request(requestId, url, contentType, RequestType.POST, data);
+            request(requestId, url, contentType, RequestType.POST, headers, data);
         } else if (TextUtils.equals(method, "DELETE")) {
-            request(requestId, url, contentType, RequestType.DELETE, data);
+            request(requestId, url, contentType, RequestType.DELETE, headers, data);
         } else {
             responseHanndler("error", "");
         }
@@ -81,10 +83,14 @@ public class NetRequestSubscribe extends OnDistributionSubscribe {
         retrofitParams.setRequestType(requestType);
         retrofitParams.setRequestUrl(url);
         retrofitParams.setResponseDataType(ResponseDataType.object);
-        HashMap<String, String> headParams = retrofitParams.getHeadParams();
-        headParams.putAll(headers);
-        TreeMap<String, Object> params = retrofitParams.getParams();
-        params.putAll(data);
+        if (!ObjectJudge.isNullOrEmpty(headers)) {
+            HashMap<String, String> headParams = retrofitParams.getHeadParams();
+            headParams.putAll(headers);
+        }
+        if (!ObjectJudge.isNullOrEmpty(data)) {
+            TreeMap<String, Object> params = retrofitParams.getParams();
+            params.putAll(data);
+        }
         transParams.setRetrofitParams(retrofitParams);
         OkRxManager.getInstance().request(transParams, new Action1<SuccessResponse>() {
             @Override

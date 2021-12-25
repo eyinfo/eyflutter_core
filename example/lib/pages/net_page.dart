@@ -40,12 +40,57 @@ class _NetPageState extends State<NetPage> {
             ConstButton(
               text: "GET请求",
               onLongPress: getRequest,
+            ),
+            ConstButton(
+              text: "PUT请求",
+              onLongPress: putRequest,
+            ),
+            ConstButton(
+              text: "POST请求",
+              onLongPress: postRequest,
+            ),
+            ConstButton(
+              text: "DELETE请求",
+              onLongPress: deleteRequest,
             )
           ],
         ),
       ),
       top: false,
     );
+  }
+
+  void deleteRequest() {
+    DioManager.instance.request(
+        retrofit: TestApi.deleteRequest,
+        successCall: (Map<String, dynamic> dataMap) {
+          Logger.instance.info(dataMap);
+        },
+        completeCall: () {
+          Logger.instance.info("request complete");
+        });
+  }
+
+  void postRequest() {
+    DioManager.instance.request(
+        retrofit: TestApi.postRequest,
+        successCall: (Map<String, dynamic> dataMap) {
+          Logger.instance.info(dataMap);
+        },
+        completeCall: () {
+          Logger.instance.info("request complete");
+        });
+  }
+
+  void putRequest() {
+    DioManager.instance.request(
+        retrofit: TestApi.putRequest,
+        successCall: (Map<String, dynamic> dataMap) {
+          Logger.instance.info(dataMap);
+        },
+        completeCall: () {
+          Logger.instance.info("request complete");
+        });
   }
 
   void getRequest() {
