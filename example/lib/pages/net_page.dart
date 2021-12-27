@@ -26,7 +26,6 @@ class _NetPageState extends State<NetPage> {
 
   @override
   Widget build(BuildContext context) {
-    if ("".isEmptyString) {}
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -96,6 +95,10 @@ class _NetPageState extends State<NetPage> {
   void getRequest() {
     DioManager.instance.request(
         retrofit: TestApi.getRequest,
+        params: {
+          "name": "易由信息",
+          "domain": "www.geease.com",
+        },
         successCall: (Map<String, dynamic> dataMap) {
           Logger.instance.info(dataMap);
         },

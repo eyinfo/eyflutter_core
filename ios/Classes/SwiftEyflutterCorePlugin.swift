@@ -31,6 +31,8 @@ public class SwiftEyflutterCorePlugin: NSObject, FlutterPlugin {
         FNUrlRoute.register(key: "ddf4af599e73eb61", module:DeviceIsEmulatorReceive.self);
         //获取设备信息
         FNUrlRoute.register(key: "1c94d6dafa7e7903", module:DeviceInfoReceive.self);
+        //dio请求
+        FNUrlRoute.register(key: "e004dc5b1e384739", module: DioRequestReceive.self);
     }
     
     static func getCallKey(params: Dictionary<String, AnyObject>?) -> String {
@@ -155,4 +157,19 @@ public class SwiftEyflutterCorePlugin: NSObject, FlutterPlugin {
         }
     }
 
+    public class DioRequestReceive:FNUrlRouteDelegate{
+        public required init(params: Dictionary<String, AnyObject>?) {
+            let entry = DioHelper.init().getParams(paramsDict: params);
+            let manager = DioManager.init();
+            if entry.method == "GET" {
+                manager.request(params: entry, method: .get);
+            } else if entry.method == "PUT" {
+                manager.request(params: entry, method: .put);
+            } else if entry.method == "POST" {
+                manager.request(params: entry, method: .post);
+            } else if entry.method == "DELETE" {
+                manager.request(params: entry, method: .delete);
+            }
+        }
+    }
 }
